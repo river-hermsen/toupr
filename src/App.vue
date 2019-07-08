@@ -1,15 +1,23 @@
 <template>
   <div id="app">
     <navBar />
-    <router-view />
+    <div id="content">
+      <router-view />
+    </div>
   </div>
 </template>
 
 <style lang="scss">
 // Import Bulma's core
-@import '~bulma/sass/utilities/_all';
+@import "~bulma/sass/utilities/_all";
+// Import font
+@import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap");
+
 // Set your colors
 $primary: #52d3aa;
+
+// Font settings
+$family-primary: "Poppins", sans-serif;
 
 // Custom css to change buefy framework
 .button {
@@ -18,8 +26,8 @@ $primary: #52d3aa;
   }
 }
 // Import Bulma and Buefy styles
-@import '~bulma';
-@import '~buefy/src/scss/buefy';
+@import "~bulma";
+@import "~buefy/src/scss/buefy";
 .button.is-primary {
   color: white;
 }
@@ -29,7 +37,6 @@ $primary: #52d3aa;
   color: white !important;
 }
 // Custom css for App.vue
-
 #content {
   padding-top: 5rem;
   min-height: calc(100vh - 4rem);
@@ -37,6 +44,13 @@ $primary: #52d3aa;
 @media only screen and (max-width: 1024px) {
   #content {
     padding-top: 3.25rem;
+  }
+}
+
+// Custom classes for all Vue views or components
+@media screen and (max-width: 1024px) {
+  .only-show-desktop {
+    display: none;
   }
 }
 </style>
