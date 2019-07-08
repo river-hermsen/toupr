@@ -1,39 +1,57 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link>|
-      <router-link to="/about">About</router-link>
-    </div>
+    <navBar />
     <router-view />
   </div>
 </template>
 
 <style lang="scss">
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+// Import Bulma's core
+@import '~bulma/sass/utilities/_all';
+// Set your colors
+$primary: #52d3aa;
+
+// Custom css to change buefy framework
+.button {
+  .is-primary {
+    color: white;
+  }
 }
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+// Import Bulma and Buefy styles
+@import '~bulma';
+@import '~buefy/src/scss/buefy';
+.button.is-primary {
+  color: white;
+}
+.button.is-primary:hover,
+.button.is-primary:active,
+.button.is-primary:focus {
+  color: white !important;
+}
+// Custom css for App.vue
+
+#content {
+  padding-top: 5rem;
+  min-height: calc(100vh - 4rem);
+}
+@media only screen and (max-width: 1024px) {
+  #content {
+    padding-top: 3.25rem;
   }
 }
 </style>
 
 <script>
+import navBar from './components/NavBar.vue';
+
 export default {
   data() {
     return {
       x: 5,
     };
+  },
+  components: {
+    navBar,
   },
 };
 </script>
