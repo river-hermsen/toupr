@@ -17,6 +17,7 @@
         <router-link
           to="/studenten"
           class="navbar-item navbar-item-text navbar-item-end-text"
+          v-if="!isLoggedIn"
         >Voor studenten</router-link>
         <div class="navbar-end-buttons navbar-item">
           <div class="buttons">
