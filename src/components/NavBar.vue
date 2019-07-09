@@ -14,14 +14,20 @@
     <div class="navbar-menu">
       <div class="navbar-start"></div>
       <div class="navbar-end">
-        <a class="navbar-item navbar-item-text navbar-item-end-text">Voor studenten</a>
+        <router-link
+          to="/studenten"
+          class="navbar-item navbar-item-text navbar-item-end-text"
+        >Voor studenten</router-link>
         <div class="navbar-end-buttons navbar-item">
           <div class="buttons">
-            <router-link to="/login" class="router-link-button">
+            <router-link to="/login" class="router-link-button" v-if="!isLoggedIn">
               <b-button type="is-primary">Log in</b-button>
             </router-link>
-            <router-link to="signup" class="router-link-button">
+            <router-link to="signup" class="router-link-button" v-if="!isLoggedIn">
               <b-button type="is-primary" outlined>Sign up</b-button>
+            </router-link>
+            <router-link to="dashboard" class="router-link-button" v-if="isLoggedIn">
+              <b-button type="is-primary" outlined>Mijn Dashboard</b-button>
             </router-link>
           </div>
         </div>
@@ -31,19 +37,49 @@
 </template>
 
 <script>
+// import firebase from 'firebase';
+
 export default {
   data() {
     return {
       showingBurgerMenu: false,
     };
   },
+  mounted() {
+    console.log(this);
+  },
   methods: {
     openMobileMenu() {
       this.showingBurgerMenu = !this.showingBurgerMenu;
-      this.$refs.stripeBurgerTop.classList.toggle('stripe-burger-top-animation');
-      this.$refs.stripeBurgerMiddle.classList.toggle('stripe-burger-middle-animation');
-      this.$refs.stripeBurgerBottom.classList.toggle('stripe-burger-bottom-animation');
+      this.$refs.stripeBurgerTop.classList.toggle(
+        'stripe-burger-top-animation',
+      );
+      this.$refs.stripeBurgerMiddle.classList.toggle(
+        'stripe-burger-middle-animation',
+      );
+      this.$refs.stripeBurgerBottom.classList.toggle(
+        'stripe-burger-bottom-animation',
+      );
       console.log(this.$refs.stripeBurgerTop);
+    },
+    // handleLogOut() {
+    //   firebase
+    //     .auth()
+    //     .signOut()
+    //     .then((res) => {
+    //       // Sign-out successful.
+    //       console.log(res);
+    //       this.$store.commit('changeLoginState', false);
+    //     })
+    //     .catch((error) => {
+    //       // An error happened.
+    //       console.log(error);
+    //     });
+    // },
+  },
+  computed: {
+    isLoggedIn() {
+      return this.$store.state.isLoggedIn;
     },
   },
 };

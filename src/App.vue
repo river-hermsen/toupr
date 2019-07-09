@@ -60,11 +60,6 @@ $family-primary: "Poppins", sans-serif;
 import navBar from './components/NavBar.vue';
 
 export default {
-  data() {
-    return {
-      x: 5,
-    };
-  },
   components: {
     navBar,
   },

@@ -5,12 +5,12 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-
+    isLoggedIn: undefined,
   },
   mutations: {
-
-  },
-  actions: {
-
+    changeLoginState(state, val) {
+      state.isLoggedIn = val;
+      console.log(val);
+    },
   },
 });

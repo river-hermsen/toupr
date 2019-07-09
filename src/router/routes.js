@@ -4,6 +4,8 @@ import Login from '../views/auth/Login.vue';
 import SignUp from '../views/auth/SignUp.vue';
 import ForStudents from '../views/ForStudents.vue';
 import Search from '../views/Search.vue';
+import Dashboard from '../views/Dashboard.vue';
+
 // Export routes for vue router
 export default [
   {
@@ -15,11 +17,17 @@ export default [
     path: '/login',
     name: 'Login',
     component: Login,
+    meta: {
+      requiredAuth: false,
+    },
   },
   {
     path: '/signup',
     name: 'SignUp',
     component: SignUp,
+    meta: {
+      requiredAuth: false,
+    },
   },
   {
     path: '/studenten',
@@ -30,5 +38,13 @@ export default [
     path: '/zoeken',
     name: 'Search',
     component: Search,
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard,
+    meta: {
+      requiredAuth: true,
+    },
   },
 ];
