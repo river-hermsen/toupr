@@ -16,15 +16,17 @@
       <div class="input-header">
         <h3 class="title">Kijk of we al bij jou in de buurt zijn.</h3>
         <div class="outer columns">
-          <b-field class="field column is-9">
+          <b-field
+            class="field column is-9"
+            :class="{ 'is-danger': errors.has('postcode') }"
+            :type="{'is-danger': errors.has('postcode')}"
+          >
             <b-input
               name="postcode"
               placeholder="Postcode"
               v-model="postcode"
               @keyup.native.enter="handleSearch"
-              v-validate="'required|max:6'"
-              maxlength="6"
-              :class="{ 'is-danger': errors.has('postcode') }"
+              v-validate="'required|max:6|min:6'"
             ></b-input>
           </b-field>
           <b-button type="input-button is-primary column is-3" @click="handleSearch">Zoeken</b-button>
@@ -88,8 +90,15 @@ export default {
   },
   methods: {
     handleSearch() {
-      console.log('Handeling search');
-      this.$router.push({ path: 'search', query: { postcode: this.postcode } });
+      // Check if postcode is valid
+      this.$validator.validateAll().then((result) => {
+        if (result) {
+          this.$router.push({
+            path: 'zoeken',
+            query: { postcode: this.postcode },
+          });
+        }
+      });
     },
   },
 };

@@ -1,23 +1,27 @@
 import Vue from 'vue';
 import firebase from 'firebase';
 import Buefy from 'buefy';
-import VeeValidate from 'vee-validate';
+import VeeValidate, { Validator } from 'vee-validate';
+import nl from 'vee-validate/dist/locale/nl';
 import App from './App.vue';
-import router from './router';
+import router from './router/index';
 import store from './store';
 import './registerServiceWorker';
 // eslint-disable-next-line
 import fireBaseConfig from './config/fireBaseConfig.js';
 
-Vue.use(VeeValidate, {
-  events: '',
-});
-Vue.config.productionTip = false;
+// Init VeeValidate
+Validator.localize({ nl });
+Vue.use(VeeValidate, { locale: 'nl' });
+
+// Init Buefy
 Vue.use(Buefy);
 
-Vue.config.productionTip = false;
+// Init firebase
 firebase.initializeApp(fireBaseConfig);
 
+// Init vue app
+Vue.config.productionTip = false;
 new Vue({
   router,
   store,
