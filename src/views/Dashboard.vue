@@ -12,7 +12,7 @@
           <div
             class="item border-left"
             @click="currentTab = 'MijnStudenten'"
-            v-bind:class="{ active: active-border-left }"
+            :class="currentTab === 'MijnStudenten' ? 'active-border-left' : null"
           >
             <img src="../assets/logo-icons/001-home-icon-silhouette.svg" class="image is-16x16" />
             <span class="text">Mijn Studenten</span>
@@ -20,16 +20,24 @@
           <div
             class="item border-left"
             @click="currentTab = 'Agenda'"
-            v-bind:class="{ active: active-border-left }"
+            :class="currentTab === 'Agenda' ? 'active-border-left' : null"
           >
             <img src="../assets/logo-icons/003-calendar.svg" class="image is-16x16" />
             <span class="text">Agenda</span>
           </div>
-          <div class="item border-left" @click="currentTab = 'SessieHistorie'">
+          <div
+            class="item border-left"
+            @click="currentTab = 'SessieHistorie'"
+            :class="currentTab === 'SessieHistorie' ? 'active-border-left' : null"
+          >
             <img src="../assets/logo-icons/005-history-clock-button.svg" class="image is-16x16" />
             <span class="text">Sessiehistorie</span>
           </div>
-          <div class="item border-left" @click="currentTab = 'Account'">
+          <div
+            class="item border-left"
+            @click="currentTab = 'AccountGegevens'"
+            :class="currentTab === 'AccountGegevens' ? 'active-border-left' : null"
+          >
             <img src="../assets/logo-icons/004-man-user.svg" class="image is-16x16" />
             <span class="text">Accountgegevens</span>
           </div>
@@ -42,6 +50,8 @@
       <div class="column is-9 content-dashboard">
         <MijnStudenten v-if="currentTab === 'MijnStudenten'" />
         <Agenda v-if="currentTab === 'Agenda'" />
+        <SessieHistorie v-if="currentTab === 'SessieHistorie'" />
+        <AccountGegevens v-if="currentTab === 'AccountGegevens'" class="content-card" />
       </div>
     </div>
   </div>
@@ -61,9 +71,13 @@
   padding: 0rem;
 }
 
-.content-dashboard {
+.content-card {
   background-color: #fff;
   box-shadow: 0px 0px 30px -21px rgba(0, 0, 0, 0.75);
+}
+.content-dashboard {
+  // background-color: #fff;
+  // box-shadow: 0px 0px 30px -21px rgba(0, 0, 0, 0.75);
 }
 
 .info-account {
@@ -124,6 +138,8 @@
 import firebase from 'firebase';
 import MijnStudenten from '../components/dashboard/MijnStudenten.vue';
 import Agenda from '../components/dashboard/Agenda.vue';
+import SessieHistorie from '../components/dashboard/SessieHistorie.vue';
+import AccountGegevens from '../components/dashboard/AccountGegevens.vue';
 
 export default {
   data() {
@@ -134,6 +150,8 @@ export default {
   components: {
     MijnStudenten,
     Agenda,
+    SessieHistorie,
+    AccountGegevens,
   },
   methods: {
     handleLogOut() {
