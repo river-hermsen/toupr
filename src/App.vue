@@ -49,6 +49,10 @@ $family-primary: "Poppins", sans-serif;
 }
 
 // Custom classes for all Vue views or components
+.text-primary {
+  color: $primary;
+}
+
 @media screen and (max-width: 1024px) {
   .only-show-desktop {
     display: none;

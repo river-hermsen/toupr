@@ -4,7 +4,7 @@ import Login from '../views/auth/Login.vue';
 import SignUp from '../views/auth/SignUp.vue';
 import ForStudents from '../views/ForStudents.vue';
 import Search from '../views/Search.vue';
-import Dashboard from '../views/Dashboard.vue';
+// import Dashboard from '../views/Dashboard.vue';
 
 // Export routes for vue router
 export default [
@@ -42,7 +42,7 @@ export default [
   {
     path: '/dashboard',
     name: 'Dashboard',
-    component: Dashboard,
+    component: () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue'),
     meta: {
       requiredAuth: true,
     },

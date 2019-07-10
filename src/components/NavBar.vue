@@ -17,17 +17,17 @@
         <router-link
           to="/studenten"
           class="navbar-item navbar-item-text navbar-item-end-text"
-          v-if="!isLoggedIn"
+          v-if="isLoggedIn === false"
         >Voor studenten</router-link>
         <div class="navbar-end-buttons navbar-item">
           <div class="buttons">
-            <router-link to="/login" class="router-link-button" v-if="!isLoggedIn">
+            <router-link to="/login" class="router-link-button" v-if="isLoggedIn === false">
               <b-button type="is-primary">Log in</b-button>
             </router-link>
-            <router-link to="signup" class="router-link-button" v-if="!isLoggedIn">
+            <router-link to="signup" class="router-link-button" v-if="isLoggedIn === false">
               <b-button type="is-primary" outlined>Sign up</b-button>
             </router-link>
-            <router-link to="dashboard" class="router-link-button" v-if="isLoggedIn">
+            <router-link to="dashboard" class="router-link-button" v-if="isLoggedIn === true">
               <b-button type="is-primary" outlined>Mijn Dashboard</b-button>
             </router-link>
           </div>
