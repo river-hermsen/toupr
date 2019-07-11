@@ -1,5 +1,7 @@
 <template>
   <div class="container-login">
+    <b-message type="is-danger" v-if="errorLogin.is">{{errorLogin.msg}}</b-message>
+
     <div>
       <b-field
         label="Email"
@@ -18,7 +20,7 @@
     </div>
     <div>
       <b-field
-        label="Password"
+        label="Wachtwoord"
         :class="{ 'is-danger': errors.has('Wachtwoord') }"
         :message="errors.first('Wachtwoord')"
         :type="{'is-danger': errors.has('Wachtwoord')}"
@@ -26,7 +28,7 @@
         <b-input
           data-vv-name="Wachtwoord"
           type="password"
-          placeholder="Password"
+          placeholder="Wachtwoord"
           v-validate="'required'"
           v-model="password"
         ></b-input>
@@ -34,7 +36,13 @@
     </div>
     <div class="password-button-container">
       <router-link to="/wachtwoordvergeten" class="link-password">Wachtwoord vergeten?</router-link>
-      <b-button type="is-primary" class="login-button-container" @click="handleLogin">Login</b-button>
+      <b-button
+        type="is-primary"
+        class="login-button-container"
+        :class="{ 'is-loading': isLoading }"
+        @click="handleLogin"
+        ref="loginBtn"
+      >Login</b-button>
     </div>
   </div>
 </template>
@@ -46,6 +54,9 @@
   margin: 2rem auto;
   padding: 2rem;
 }
+.message {
+  font-size: 0.9rem;
+}
 .password-button-container {
   margin-top: 1.2rem;
   height: 30px;
@@ -56,6 +67,7 @@
 
 .login-button-container {
   float: right;
+  width: 6rem;
 }
 </style>
 
@@ -67,24 +79,68 @@ export default {
     return {
       email: null,
       password: null,
+      isLoading: false,
+      errorLogin: {
+        is: false,
+        msg: '',
+      },
     };
   },
   methods: {
     handleLogin() {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then((res) => {
-          this.$router.push('/');
-          console.log(res);
-        })
-        .catch((error) => {
-          console.log(error);
+      // Get button from $refs
+      const { loginBtn } = this.$refs;
 
-          // Handle Errors here.
-          // let errorCode = error.code;
-          // let errorMessage = error.message;
-          // ...
+      // Make button loading
+      loginBtn.$el.classList.add('is-loading');
+      loginBtn.$el.innerHTML = '';
+
+      // Check for errors in input
+      this.$validator
+        .validateAll()
+        .then((result) => {
+          if (!result) {
+            // If there are errors in input
+            // Remove loading button
+            loginBtn.$el.classList.remove('is-loading');
+            loginBtn.$el.innerHTML = 'Login';
+            return;
+          }
+          // Login with input cred
+          firebase
+            .auth()
+            .signInWithEmailAndPassword(this.email, this.password)
+            .then(() => {
+              // Login success
+              this.$router.push('/');
+            })
+            .catch((error) => {
+              // Login error
+              // Remove loading button
+              loginBtn.$el.classList.remove('is-loading');
+              loginBtn.$el.innerHTML = 'Login';
+              if (error.code === 'auth/user-not-found') {
+                this.errorLogin = {};
+                this.errorLogin.is = true;
+                // eslint-disable-next-line
+                this.errorLogin.msg =
+                  'Er is geen account met dat e-mail adres bij ons bekent';
+              } else if (error.code === 'auth/wrong-password') {
+                this.errorLogin = {};
+                this.errorLogin.is = true;
+                // eslint-disable-next-line
+                this.errorLogin.msg = "Het wachtwoord is verkeerd.";
+              } else {
+                this.errorLogin = {};
+                this.errorLogin.is = true;
+                // eslint-disable-next-line
+                this.errorLogin.msg = "Er is een onbekende fout opgetreden.";
+              }
+              console.log(error.code);
+            });
+        })
+        .catch(() => {
+          // Failed
         });
     },
   },
