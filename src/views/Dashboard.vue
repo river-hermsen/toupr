@@ -67,19 +67,15 @@
 .side-menu {
   background-color: #fff;
   margin-right: 40px;
-  box-shadow: 0px 0px 30px -21px rgba(0, 0, 0, 0.75);
+  box-shadow: 1px 21px 65px -51px rgba(0, 0, 0, 0.75);
   padding: 0rem;
 }
 
 .content-card {
   background-color: #fff;
-  box-shadow: 0px 0px 30px -21px rgba(0, 0, 0, 0.75);
+  box-shadow: 1px 21px 65px -51px rgba(0, 0, 0, 0.75);
+  padding: 1.4rem 2rem 2rem 2rem;
 }
-.content-dashboard {
-  // background-color: #fff;
-  // box-shadow: 0px 0px 30px -21px rgba(0, 0, 0, 0.75);
-}
-
 .info-account {
   padding: 1.5rem 0rem 1rem 1rem;
 }

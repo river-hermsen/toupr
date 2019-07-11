@@ -12,7 +12,7 @@ import fireBaseConfig from './config/fireBaseConfig.js';
 
 // Init VeeValidate
 Validator.localize({ nl });
-Vue.use(VeeValidate, { locale: 'nl' });
+Vue.use(VeeValidate, { locale: 'nl', events: 'blur' });
 
 // Init Buefy
 Vue.use(Buefy);
