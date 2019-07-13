@@ -1,5 +1,6 @@
 <template>
   <div class="container-signup">
+    <b-message type="is-danger" v-if="errorLogin.is">{{errorLogin.msg}}</b-message>
     <div>
       <b-field
         label="Email"
@@ -42,14 +43,20 @@
             data-vv-name="Wachtwoord bevestigen"
             type="password"
             placeholder="Wachtwoord bevestigen"
-            v-validate="{ is: confirmation, required }"
+            v-validate="{ is: password, required: true}"
             v-model="passwordConf"
           ></b-input>
         </b-field>
       </div>
     </div>
     <div class="password-button-container">
-      <b-button type="is-primary" class="signup-button-container" @click="handleSignUp">Aanmelden</b-button>
+      <b-button
+        type="is-primary"
+        class="signup-button-container"
+        :class="{ 'is-loading': isLoading }"
+        @click="handleSignUp"
+        ref="signUpBtn"
+      >Aanmelden</b-button>
     </div>
   </div>
 </template>
@@ -71,6 +78,7 @@
 
 .signup-button-container {
   float: right;
+  width: 8rem;
 }
 </style>
 
@@ -83,25 +91,64 @@ export default {
       email: null,
       password: null,
       passwordConf: null,
+      isLoading: false,
+      errorLogin: {
+        is: false,
+        msg: '',
+      },
     };
   },
   methods: {
     handleSignUp() {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then((res) => {
-          this.$router.push('/');
-          console.log(res);
-        })
-        .catch((error) => {
-          console.log(error);
+      // Get btn from view
+      const { signUpBtn } = this.$refs;
 
-          // Handle Errors here.
-          // let errorCode = error.code;
-          // let errorMessage = error.message;
-          // ...
-        });
+      // Make button loading
+      signUpBtn.$el.classList.add('is-loading');
+      signUpBtn.$el.innerHTML = '';
+
+      this.$validator.validateAll().then((result) => {
+        if (!result) {
+          // Errors in input
+          // Remove loading button
+          signUpBtn.$el.classList.remove('is-loading');
+          signUpBtn.$el.innerHTML = 'Aanmelden';
+          return;
+        }
+        firebase
+          .auth()
+          .createUserWithEmailAndPassword(this.email, this.password)
+          .then((res) => {
+            // SignUp success
+            this.$router.push('/');
+          })
+          .catch((error) => {
+            // SignUp error
+            // Remove loading button
+            signUpBtn.$el.classList.remove('is-loading');
+            signUpBtn.$el.innerHTML = 'Aanmelden';
+            this.errorLogin = {};
+            if (error.code === 'auth/email-already-in-use') {
+              this.errorLogin.is = true;
+              this.errorLogin.msg = 'Dat e-mail adres is al bekend bij ons.';
+            } else if (error.code === 'auth/weak-password') {
+              this.errorLogin.is = true;
+              // eslint-disable-next-line
+              this.errorLogin.msg =
+                'Wachtwoord moet minsten 6 tekens bevatten.';
+            } else {
+              this.errorLogin.is = true;
+              // eslint-disable-next-line
+              this.errorLogin.msg = "Er is een onbekende fout opgetreden.";
+            }
+            console.log(error);
+
+            // Handle Errors here.
+            // let errorCode = error.code;
+            // let errorMessage = error.message;
+            // ...
+          });
+      });
     },
   },
 };
