@@ -4,7 +4,7 @@
       <div class="column is-3 side-menu">
         <div class="info-account">
           <img src="../assets/logo-icons/default-avatar.svg" class="avatar image is-48x48" />
-          <h4 class="welcome-title">Welkom!</h4>
+          <h4 class="welcome-title">Welkom {{fNaam}}</h4>
           <br />
           <h5 class="welcome-what-title">Ouder</h5>
         </div>
@@ -67,13 +67,16 @@
 .side-menu {
   background-color: #fff;
   margin-right: 40px;
-  box-shadow: 1px 21px 65px -51px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 1px 14px -10px rgba(0, 0, 0, 0.75);
   padding: 0rem;
+  max-height: fit-content;
 }
-
+.content-dashboard {
+  padding-top: 0rem;
+}
 .content-card {
   background-color: #fff;
-  box-shadow: 1px 21px 65px -51px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 1px 14px -10px rgba(0, 0, 0, 0.75);
   padding: 1.4rem 2rem 2rem 2rem;
 }
 .info-account {
@@ -140,6 +143,7 @@ import AccountGegevens from '../components/dashboard/AccountGegevens.vue';
 export default {
   data() {
     return {
+      fNaam: '',
       currentTab: 'MijnStudenten',
     };
   },
@@ -148,6 +152,16 @@ export default {
     Agenda,
     SessieHistorie,
     AccountGegevens,
+  },
+  mounted() {
+    const { db } = this.$store.state;
+    const { uid } = this.$store.state.userData;
+    const docRef = db.collection('users').doc(uid);
+    docRef.get().then((doc) => {
+      const userData = doc.data();
+      this.fNaam = userData.fNaam;
+      console.log(userData);
+    });
   },
   methods: {
     handleLogOut() {

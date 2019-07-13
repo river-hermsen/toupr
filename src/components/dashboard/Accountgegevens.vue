@@ -120,7 +120,7 @@
 export default {
   data() {
     return {
-      uid: this.$store.state.userInfo.uid,
+      uid: this.$store.state.userData.uid,
       fNaam: null,
       lNaam: null,
       email: null,

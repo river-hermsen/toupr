@@ -13,23 +13,27 @@
           <br class="only-show-desktop" />
         </h3>
       </div>
-      <div class="input-header">
-        <h3 class="title">Kijk of we al bij jou in de buurt zijn.</h3>
-        <div class="outer columns">
-          <b-field
-            class="field column is-9"
-            :class="{ 'is-danger': errors.has('postcode') }"
-            :type="{'is-danger': errors.has('postcode')}"
-          >
-            <b-input
-              name="postcode"
-              placeholder="Postcode"
-              v-model="postcode"
-              @keyup.native.enter="handleSearch"
-              v-validate="'required|max:6|min:6'"
-            ></b-input>
-          </b-field>
-          <b-button type="input-button is-primary column is-3" @click="handleSearch">Zoeken</b-button>
+      <div class="columns">
+        <div
+          class="column is-hidden-mobile is-11-touch is-9-tablet is-6-desktop is-5-fullhd input-header"
+        >
+          <h3 class="title">Kijk of we al bij jou in de buurt zijn.</h3>
+          <div class="outer columns">
+            <b-field
+              class="field column is-9"
+              :class="{ 'is-danger': errors.has('postcode') }"
+              :type="{'is-danger': errors.has('postcode')}"
+            >
+              <b-input
+                name="postcode"
+                placeholder="Postcode"
+                v-model="postcode"
+                @keyup.native.enter="handleSearch"
+                v-validate="'required|max:6|min:6'"
+              ></b-input>
+            </b-field>
+            <b-button type="input-button is-primary column is-3" @click="handleSearch">Zoeken</b-button>
+          </div>
         </div>
       </div>
     </div>
@@ -46,6 +50,7 @@
     font-size: 5rem;
   }
   .header-sub-title {
+    margin: 2rem;
     padding-top: 2rem;
     font-size: 1.4rem;
   }
@@ -56,12 +61,14 @@
     font-weight: 500;
     font-size: 2.5rem;
   }
+  .header-text .header-sub-title {
+    font-size: 1.2rem;
+  }
 }
 
 .input-header {
   box-shadow: 0 0 40px 3px rgba(0, 0, 0, 0.18);
   margin: 4rem auto;
-  width: 550px;
   height: 170px;
   .title {
     color: #07265d;

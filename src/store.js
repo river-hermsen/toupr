@@ -8,13 +8,14 @@ export default new Vuex.Store({
     db: undefined,
     isLoggedIn: undefined,
     userInfo: {},
+    userData: {},
   },
   mutations: {
     changeLoginState(state, val) {
       state.isLoggedIn = val;
     },
-    addUserInfoData(state, userInfoData) {
-      state.userInfo = userInfoData;
+    addUserData(state, userData) {
+      state.userData = userData;
     },
     addFireStoreDb(state, db) {
       state.db = db;

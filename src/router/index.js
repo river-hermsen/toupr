@@ -18,7 +18,7 @@ router.beforeEach((to, from, next) => {
       // User is signed in.
       // console.log('User is signed in');
       store.commit('changeLoginState', true);
-      store.commit('addUserInfoData', user);
+      store.commit('addUserData', user);
       next();
       if (to.meta.requiredAuth === false) {
         next('/dashboard');

@@ -4,32 +4,44 @@
       <router-link to="/" class="navbar-item">
         <img src="../assets/logo-icons/logo-toupr.png" class="navbar-logo-img" />
       </router-link>
-      <div class="navbar-burger-button" @click="openMobileMenu">
-        <div class="stripe-burger" ref="stripeBurgerTop"></div>
-        <div class="stripe-burger" ref="stripeBurgerMiddle"></div>
-        <div class="stripe-burger" ref="stripeBurgerBottom"></div>
+      <div class="navbar-burger burger" @click="openCloseMobileMenu" ref="burgerMenu">
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
 
-    <div class="navbar-menu">
+    <div class="navbar-menu" ref="navBar" :class="{'is-active': showingBurgerMenu}">
       <div class="navbar-start"></div>
       <div class="navbar-end">
-        <router-link
-          to="/studenten"
-          class="navbar-item navbar-item-text navbar-item-end-text"
-          v-if="isLoggedIn === false"
-        >Voor studenten</router-link>
+        <div class="studenten-nav-bar-container">
+          <router-link
+            to="/studenten"
+            class="navbar-item navbar-item-end-text link-nav-bar link-studenten-nav-bar"
+            v-if="isLoggedIn === false"
+            tag="span"
+          >Voor studenten</router-link>
+        </div>
         <div class="navbar-end-buttons navbar-item">
-          <div class="buttons">
-            <router-link to="/login" class="router-link-button" v-if="isLoggedIn === false">
-              <b-button type="is-primary">Log in</b-button>
-            </router-link>
-            <router-link to="signup" class="router-link-button" v-if="isLoggedIn === false">
-              <b-button type="is-primary" outlined>Sign up</b-button>
-            </router-link>
-            <router-link to="dashboard" class="router-link-button" v-if="isLoggedIn === true">
-              <b-button type="is-primary" outlined>Mijn Dashboard</b-button>
-            </router-link>
+          <div class>
+            <router-link
+              to="/login"
+              class="router-link-nav-bar link-nav-bar"
+              v-if="isLoggedIn === false"
+              tag="span"
+            >Log in</router-link>
+            <router-link
+              to="signup"
+              class="router-link-nav-bar link-nav-bar"
+              v-if="isLoggedIn === false"
+              tag="span"
+            >Aanmelden</router-link>
+            <router-link
+              to="dashboard"
+              class="router-link-nav-bar link-nav-bar"
+              v-if="isLoggedIn === true"
+              tag="span"
+            >Mijn Dashboard</router-link>
           </div>
         </div>
       </div>
@@ -47,37 +59,28 @@ export default {
     };
   },
   methods: {
-    openMobileMenu() {
-      this.showingBurgerMenu = !this.showingBurgerMenu;
-      this.$refs.stripeBurgerTop.classList.toggle(
-        'stripe-burger-top-animation',
-      );
-      this.$refs.stripeBurgerMiddle.classList.toggle(
-        'stripe-burger-middle-animation',
-      );
-      this.$refs.stripeBurgerBottom.classList.toggle(
-        'stripe-burger-bottom-animation',
-      );
-      console.log(this.$refs.stripeBurgerTop);
+    openCloseMobileMenu() {
+      const burger = this.$refs.burgerMenu;
+      const nav = this.$refs.navBar;
+      burger.classList.toggle('is-active');
+      nav.classList.toggle('is-active');
     },
-    // handleLogOut() {
-    //   firebase
-    //     .auth()
-    //     .signOut()
-    //     .then((res) => {
-    //       // Sign-out successful.
-    //       console.log(res);
-    //       this.$store.commit('changeLoginState', false);
-    //     })
-    //     .catch((error) => {
-    //       // An error happened.
-    //       console.log(error);
-    //     });
-    // },
   },
   computed: {
     isLoggedIn() {
       return this.$store.state.isLoggedIn;
+    },
+    isChangedRoute() {
+      return this.$route.path;
+    },
+  },
+  watch: {
+    // eslint-disable-next-line
+    isChangedRoute: function() {
+      const burger = this.$refs.burgerMenu;
+      const nav = this.$refs.navBar;
+      burger.classList.remove('is-active');
+      nav.classList.remove('is-active');
     },
   },
 };
@@ -88,6 +91,7 @@ export default {
 .display-none {
   display: none;
 }
+
 nav {
   position: fixed;
   width: 100vw;
@@ -95,14 +99,45 @@ nav {
   height: 5rem;
   font-size: 1.2rem;
 }
-.router-link-button {
-  padding: 1rem;
+
+.navbar-brand {
+  max-height: 3.25rem;
 }
-.router-link-exact-active {
+
+.router-link-nav-bar {
+  margin: 1rem;
+}
+
+.link-nav-bar {
+  cursor: pointer;
+  color: #8792a5;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  padding-bottom: 0.18rem;
+}
+
+.link-nav-bar:hover {
+  padding-bottom: 0.18rem;
   border-bottom: 2px solid #52d3aa;
 }
-.navbar-item-end-text {
+
+.link-nav-bar:hover:active {
+  padding-bottom: 0.18rem;
+}
+
+.studenten-nav-bar-container {
+  align-items: center;
+  display: flex;
   border-right: 1px solid #ebebeb;
+}
+
+.link-studenten-nav-bar {
+  margin-right: 1.8rem;
+  color: inherit;
+}
+
+.router-link-exact-active {
+  border-bottom: 2px solid #52d3aa;
 }
 .navbar-logo-img {
   margin-left: 1.3rem;
@@ -144,9 +179,19 @@ nav {
   nav {
     height: 3.25rem;
   }
+  .navbar-menu.is-active {
+    padding-bottom: 1rem;
+  }
   .navbar-item img {
-    max-height: 2.5rem;
+    max-height: 2.1rem;
     margin-left: 0rem;
+  }
+  .studenten-nav-bar-container {
+    padding: 0.5rem 0.75rem;
+  }
+  .link-studenten-nav-bar {
+    margin-left: 1rem;
+    padding-left: 0.75rem;
   }
 }
 </style>
