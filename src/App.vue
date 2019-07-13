@@ -11,7 +11,7 @@
 // Import Bulma's core
 @import "~bulma/sass/utilities/_all";
 // Import font
-@import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap");
 
 // Set your colors
 $primary: #52d3aa;
@@ -51,6 +51,10 @@ $family-primary: "Poppins", sans-serif;
 // Custom classes for all Vue views or components
 .text-primary {
   color: $primary;
+}
+
+.label {
+  font-weight: 300;
 }
 
 @media screen and (max-width: 1024px) {

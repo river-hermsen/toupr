@@ -120,7 +120,24 @@ export default {
           .createUserWithEmailAndPassword(this.email, this.password)
           .then((res) => {
             // SignUp success
-            this.$router.push('/');
+            console.log('Sucessfully signed up');
+            console.log(res);
+            const db = firebase.firestore();
+            db.collection('users')
+              .doc(res.user.uid)
+              .set({
+                email: res.user.email,
+                emailVerified: res.user.emailVerified,
+                phoneNumber: res.user.phoneNumber,
+                photoURL: res.user.photoURL,
+                creationTime: res.user.metadata.creationTime,
+              })
+              .then(() => {
+                console.log('Document successfully written!');
+              })
+              .catch(() => {
+                // console.error('Error writing document: ', error);
+              });
           })
           .catch((error) => {
             // SignUp error
@@ -141,12 +158,6 @@ export default {
               // eslint-disable-next-line
               this.errorLogin.msg = "Er is een onbekende fout opgetreden.";
             }
-            console.log(error);
-
-            // Handle Errors here.
-            // let errorCode = error.code;
-            // let errorMessage = error.message;
-            // ...
           });
       });
     },

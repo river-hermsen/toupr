@@ -19,6 +19,7 @@ Vue.use(Buefy);
 
 // Init firebase
 firebase.initializeApp(fireBaseConfig);
+store.commit('addFireStoreDb', firebase.firestore());
 
 // Init vue app
 Vue.config.productionTip = false;

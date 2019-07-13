@@ -46,9 +46,6 @@ export default {
       showingBurgerMenu: false,
     };
   },
-  mounted() {
-    console.log(this);
-  },
   methods: {
     openMobileMenu() {
       this.showingBurgerMenu = !this.showingBurgerMenu;

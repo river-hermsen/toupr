@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="account-container">
+    <b-loading :is-full-page="false" :active.sync="isLoading"></b-loading>
     <div class="header-container">
       <h1 class="header-title">Accountgegevens</h1>
       <h3 class="header-sub-title">Op deze pagina kun je je gegevens wijzigen.</h3>
@@ -16,11 +17,11 @@
           <b-input v-model="email"></b-input>
         </b-field>
         <b-field label="Telefoonnummer" class="column is-6">
-          <b-input v-model="tel"></b-input>
+          <b-input v-model="phoneNumber"></b-input>
         </b-field>
       </div>
       <hr />
-      <span>Gegevens scholier:</span>
+      <span class="section-info-text">Gegevens scholier:</span>
       <div class="columns inputs-container">
         <b-field label="Leeftijd" class="column is-3">
           <div class="age-input-container">
@@ -40,7 +41,7 @@
         </b-field>
       </div>
       <hr />
-      <span>Adresgegevens:</span>
+      <span class="section-info-text">Adresgegevens:</span>
       <div class="columns is-multiline inputs-container">
         <b-field label="Adres" class="column is-6">
           <b-input v-model="adresInfo.adres"></b-input>
@@ -53,13 +54,25 @@
         </b-field>
       </div>
       <div class="save-changes-btn-container">
-        <b-button type="is-primary" class="save-changes-btn">Wijzigingen opslaan</b-button>
+        <b-button
+          type="is-primary"
+          class="save-changes-btn"
+          @click="saveChanges"
+        >Wijzigingen opslaan</b-button>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.account-container {
+  position: relative;
+}
+
+.loading-overlay {
+  z-index: 99;
+}
+
 .header-title {
   font-size: 2rem;
 }
@@ -70,6 +83,10 @@
 
 .account-content {
   margin-top: 0.8rem;
+}
+
+.section-info-text {
+  font-weight: 500;
 }
 
 .inputs-container {
@@ -103,10 +120,11 @@
 export default {
   data() {
     return {
+      uid: this.$store.state.userInfo.uid,
       fNaam: null,
       lNaam: null,
       email: null,
-      tel: null,
+      phoneNumber: null,
       scholier: {
         leeftijd: null,
         niveau: null,
@@ -116,7 +134,61 @@ export default {
         postcode: null,
         plaats: null,
       },
+      isLoading: true,
     };
+  },
+  created() {
+    const { db } = this.$store.state;
+    const docRef = db.collection('users').doc(this.uid);
+    docRef.get().then((doc) => {
+      console.log('Got user data');
+      const userData = doc.data();
+      this.fNaam = userData.fNaam;
+      this.lNaam = userData.lNaam;
+      this.email = userData.email;
+      this.phoneNumber = userData.phoneNumber;
+      this.scholier = userData.scholier;
+      // this.scholier.leeftijd = userData.scholier
+      //   ? userData.scholier.leeftijd
+      //   : '';
+      // this.scholier.niveau = userData.scholier ? userData.scholier.niveau : '';
+      this.adresInfo = userData.adresInfo;
+      // this.adresInfo.adres = userData.adresInfo ? userData.adresInfo.adres : '';
+      // this.adresInfo.postcode = userData.adresInfo
+      //   ? userData.adresInfo.postcode
+      //   : '';
+      // this.adresInfo.plaats = userData.adresInfo
+      //   ? userData.adresInfo.plaats
+      //   : '';
+      this.isLoading = false;
+    });
+  },
+  methods: {
+    saveChanges() {
+      this.isLoading = true;
+      const { db } = this.$store.state;
+      db.collection('users')
+        .doc(this.uid)
+        .update({
+          fNaam: this.fNaam,
+          lNaam: this.lNaam,
+          email: this.email,
+          phoneNumber: this.phoneNumber,
+          scholier: this.scholier,
+          adresInfo: this.adresInfo,
+        })
+        .then(() => {
+          this.isLoading = false;
+          this.$toast.open({
+            message: 'Veranderingen opgeslagen!',
+            type: 'is-success',
+          });
+          console.log('Document successfully written!');
+        })
+        .catch((error) => {
+          console.error('Error writing document: ', error);
+        });
+    },
   },
 };
 </script>
