@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <router-link to="/" class="navbar-item">
+      <router-link to="/" class="navbar-item navbar-logo-container">
         <img src="../assets/logo-icons/logo-toupr.png" class="navbar-logo-img" />
       </router-link>
       <div class="navbar-burger burger" @click="openCloseMobileMenu" ref="burgerMenu">
@@ -146,28 +146,14 @@ nav {
   max-width: 120px;
   max-height: 49px;
 }
-.navbar-burger-button {
-  margin: auto 1rem auto auto;
-  height: 100%;
+.navbar-burger {
+  margin-right: 0.3rem;
 }
-.stripe-burger {
-  margin: 7px;
-  height: 2px;
-  width: 33px;
-  background-color: #52d3aa;
-  transition: all 0.5s ease;
-}
-.stripe-burger-top-animation {
-  transform: rotateZ(-45deg) translateY(13px);
-}
-.stripe-burger-middle-animation {
-  transform: translateX(90px);
-  opacity: 0;
-}
-.stripe-burger-bottom-animation {
-  transform: rotateZ(45deg) translateY(-13px);
-}
+
 @media only screen and (min-width: 1024px) {
+  .navbar-logo-container {
+    height: 5rem;
+  }
   .navbar-item-text:hover {
     border-bottom: 1px solid #52d3aa;
   }
