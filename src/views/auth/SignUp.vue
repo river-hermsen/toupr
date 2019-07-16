@@ -121,8 +121,9 @@ export default {
           .then((res) => {
             // SignUp success
             console.log('Sucessfully signed up');
-            console.log(res);
-            const db = firebase.firestore();
+            // console.log(res);
+            // const db = firebase.firestore();
+            const { db } = this.$store.state;
             db.collection('users')
               .doc(res.user.uid)
               .set({

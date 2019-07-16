@@ -12,7 +12,8 @@
 @import "~bulma/sass/utilities/_all";
 // Import font
 @import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap");
-
+// Import material dsign i
+@import url("//cdn.materialdesignicons.com/3.8.95/css/materialdesignicons.min.css");
 // Set your colors
 $primary: #52d3aa;
 

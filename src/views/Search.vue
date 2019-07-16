@@ -1,23 +1,51 @@
 <template>
   <div class="search-content">
+    <b-modal :active.sync="isInfoModalActive">
+      <div class="modal-content">
+        <div>
+          <h2>Voorwaarden herhaalboekingen.</h2>
+        </div>
+        <div>
+          <h4>Wat houden de herhaalboekingen in?</h4>
+          <p>
+            Een herhaalboeking houdt in dat de Toupr student één of meerdere keren per week langskomt.
+            Je hebt elke keer dezelfde Toupr student,
+            mocht je om welke reden dan ook van Toupr student willen wisselen, is dat altijd mogelijk.
+          </p>
+          <br />
+          <h4>Kan ik de datum en/of tijd van mijn afspraak wijzigen?</h4>
+          <p>Ja zeker! Dit kan je met de Toupr student zelf overeenkomen.</p>
+          <br />
+
+          <h4>Wat zijn de annuleringsvoorwaarden?</h4>
+          <p>
+            Je kunt een individuele sessies kosteloos afzeggen tot 48 uur voor aanvang.
+            Wanneer je een afspraak korter dan 48 uur voor aanvang van de sessie annuleert, worden annuleringskosten ter waarde van één uur in rekening gebracht.
+            Wanner je een afspraak korter dan 24 uur voor aanvang van de sessie annuleert, dan worden de kosten van de volledige sessie in rekening gebracht.
+          </p>
+        </div>
+      </div>
+    </b-modal>
     <div class="columns">
       <div class="side-content column is-3">
         <div class="weekly-card">
           <div class="weekly-card-header">
             <span>Wekelijks</span>
-            <img src="../assets/logo-icons/info.svg" />
+            <div @click="isInfoModalActive = true">
+              <b-icon icon="information"></b-icon>
+            </div>
           </div>
           <div class="weekly-card-content">
             <div class="ticks-container">
-              <img src="../assets/logo-icons/tick.png" />
+              <b-icon icon="check" type="is-primary"></b-icon>
               <span>Telkens dezelfde student.</span>
             </div>
             <div class="ticks-container">
-              <img src="../assets/logo-icons/tick.png" />
+              <b-icon icon="check" type="is-primary"></b-icon>
               <span>Altijd opzegbaar.</span>
             </div>
             <div class="ticks-container">
-              <img src="../assets/logo-icons/tick.png" />
+              <b-icon icon="check" type="is-primary"></b-icon>
               <span>Geen gedoe.</span>
             </div>
           </div>
@@ -27,19 +55,94 @@
             <b>Meer informatie nodig?</b>
             Laat je telefoonnummer achter en we bellen je binnen een dag terug!
           </p>
-          <b-input class="call-input" v-model="phoneNumber" placeholder="Telefoonnummer"></b-input>
+          <b-field
+            :class="{ 'is-danger': errors.has('Telefoonnummer') }"
+            :message="errors.first('Telefoonnummer')"
+            :type="{'is-danger': errors.has('Telefoonnummer')}"
+          >
+            <b-input
+              class="call-input"
+              v-model="phoneNumber"
+              v-validate="'required|numeric|max:10'"
+              data-vv-name="Telefoonnummer"
+              placeholder="Telefoonnummer"
+            ></b-input>
+          </b-field>
           <b-button class="call-submit-btn" @click="submitCallMoreInfo">Bel mij terug</b-button>
         </div>
       </div>
-      <div class="main-content"></div>
+      <div class="main-content">
+        <div class="header-content">
+          <div class="recommended">
+            <h2>Aanbevolen voor jou</h2>
+          </div>
+          <div class="input-header-container">
+            <b-datepicker
+              :focused-date="date"
+              :first-day-of-week="1"
+              :min-date="new Date()"
+              v-model="datePicker"
+              class="date-picker-input"
+              placeholder="Datum"
+              icon="calendar-today"
+            >
+              <template slot="header">
+                <b-field class="datePickerMonthField">
+                  <b-autocomplete
+                    open-on-focus
+                    readonly
+                    v-model="month"
+                    :data="months"
+                    field="name"
+                    @select="selectMonth"
+                  ></b-autocomplete>
+                </b-field>
+              </template>
+            </b-datepicker>
+            <div class="select how-often-input">
+              <select v-model="howOften">
+                <option disabled value>Hoe vaak?</option>
+                <option>Eenmalig</option>
+                <option>Wekelijks</option>
+              </select>
+            </div>
+            <div class="select">
+              <select v-model="period">
+                <option disabled value>Hoelaat?</option>
+                <option>Maakt niet uit</option>
+                <option>16:00 - 18:00</option>
+                <option>18:30 - 20:30</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .search-content {
-  max-width: 1200px;
+  max-width: 1250px;
   margin: 2rem auto;
+}
+
+.modal-content {
+  background-color: white;
+  max-width: 700px;
+  padding: 1.5rem;
+  h2 {
+    font-size: 1.8rem;
+    border-bottom: 2px solid #c0bfbf;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.9rem;
+
+    font-weight: 600;
+  }
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
 }
 
 .weekly-card {
@@ -72,7 +175,8 @@
       }
       span {
         font-size: 0.9rem;
-        margin-left: 1rem;
+        margin-left: 0.2rem;
+        padding-right: 0.4rem;
       }
     }
     .ticks-container:first-child {
@@ -89,7 +193,6 @@
   border-radius: 5px;
   .call-input {
     margin-top: 0.8rem;
-    margin-bottom: 0.8rem;
   }
   .call-submit-btn {
     background-color: #ff6c5c;
@@ -97,17 +200,112 @@
     width: 100%;
   }
 }
+
+.main-content {
+  margin: 0 2rem;
+  padding: 0.75rem;
+  width: 100%;
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .recommended {
+      h2 {
+        display: inline;
+        font-size: 1.8rem;
+        font-weight: 700;
+      }
+    }
+    .input-header-container {
+      display: flex;
+      width: auto;
+      justify-content: flex-end;
+      select {
+        width: 9rem;
+      }
+      .date-picker-input {
+        width: 9rem;
+        margin-right: 1rem;
+      }
+      .how-often-input {
+        margin-right: 1rem;
+      }
+    }
+  }
+}
+
+.select::after {
+  border-color: #52d3aa !important;
+}
 </style>
 
 <script>
 export default {
   data() {
     return {
+      isInfoModalActive: false,
       phoneNumber: null,
+      date: new Date(),
+      month: null,
+      months: [
+        { name: 'January', value: 0 },
+        { name: 'February', value: 1 },
+        { name: 'March', value: 2 },
+        { name: 'April', value: 3 },
+        { name: 'May', value: 4 },
+        { name: 'June', value: 5 },
+        { name: 'July', value: 6 },
+        { name: 'August', value: 7 },
+        { name: 'September', value: 8 },
+        { name: 'October', value: 9 },
+        { name: 'November', value: 10 },
+        { name: 'December', value: 11 },
+      ],
+      datePicker: null,
+      howOften: '',
+      period: '',
     };
   },
+  mounted() {
+    this.month = this.months.filter(
+      item => item.value === this.date.getMonth(),
+    )[0].name;
+  },
   methods: {
-    submitCallMoreInfo() {},
+    submitCallMoreInfo() {
+      this.$validator.validateAll().then((result) => {
+        if (!result) {
+          // If there are errors in input
+          // Remove loading button
+          return;
+        }
+
+        const { db } = this.$store.state;
+
+        db.collection('callBack')
+          .doc()
+          .set({
+            phoneNumber: this.phoneNumber,
+            creationTime: new Date(),
+          })
+          .then((res) => {
+            this.$toast.open({
+              message: 'We bellen je binnen een dag terug!',
+              type: 'is-success',
+            });
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+    },
+    selectMonth(option) {
+      if (option) {
+        this.date = new Date(this.date);
+        this.date.setMonth(option.value);
+      }
+    },
   },
 };
 </script>
