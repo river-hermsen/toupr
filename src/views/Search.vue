@@ -116,6 +116,23 @@
             </div>
           </div>
         </div>
+        <div class="students-content" ref="studentsContent">
+          <div class="student-container">
+            <div class="columns student-columns">
+              <div class="column is-3 student-image"></div>
+              <div class="column is-7">
+                <div class="columns">
+                  <h4 class="column is-8 is-size-4 student-name">Hidde</h4>
+                  <h5 class="column is-4 student-price">
+                    <span class="is-size-6">€ 15,50</span>
+                    <span class="is-size-7">&ensp;per uur</span>
+                  </h5>
+                </div>
+              </div>
+              <div class="column is-2 student-select"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -205,31 +222,74 @@
   margin: 0 2rem;
   padding: 0.75rem;
   width: 100%;
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .recommended {
-      h2 {
-        display: inline;
-        font-size: 1.8rem;
-        font-weight: 700;
-      }
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .recommended {
+    h2 {
+      display: inline;
+      font-size: 1.8rem;
+      font-weight: 700;
     }
-    .input-header-container {
+  }
+  .input-header-container {
+    display: flex;
+    width: auto;
+    justify-content: flex-end;
+    select {
+      width: 9rem;
+    }
+    .date-picker-input {
+      width: 9rem;
+      margin-right: 1rem;
+    }
+    .how-often-input {
+      margin-right: 1rem;
+    }
+  }
+}
+
+.students-content {
+  .student-container {
+    border-radius: 5px;
+    background-color: white;
+    height: 190px;
+    max-width: 100%;
+    border: 1px solid #ebebeb;
+    margin-top: 1.2rem;
+    cursor: pointer;
+    box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.06);
+    .student-columns {
+      margin: 0px;
+    }
+    .student-image {
+      background-image: url("https://toupr.nl/photo_student_uploads/profile61.png");
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+      width: 190px;
+      height: 189px;
+      background-size: auto;
+      background-repeat: no-repeat;
+      background-size: 300px auto;
+      background-position: center;
+      background-size: cover;
+    }
+    .student-name {
+      margin-left: 0.3rem;
+      font-weight: 600;
+    }
+    .student-price {
       display: flex;
-      width: auto;
-      justify-content: flex-end;
-      select {
-        width: 9rem;
-      }
-      .date-picker-input {
-        width: 9rem;
-        margin-right: 1rem;
-      }
-      .how-often-input {
-        margin-right: 1rem;
-      }
+      align-items: center;
+    }
+    .student-price > :first-child {
+      font-weight: 600;
+    }
+    .student-select {
+      border-left: 1px solid #ebebeb;
     }
   }
 }
@@ -240,6 +300,8 @@
 </style>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -264,9 +326,57 @@ export default {
       datePicker: null,
       howOften: '',
       period: '',
+      coordinates: {
+        lat: null,
+        lon: null,
+      },
     };
   },
   mounted() {
+    console.log(this);
+    const postalCode = this.$route.query.postcode;
+    if (!postalCode || postalCode === '') {
+      this.$router.push('/');
+    } else {
+      axios
+        .get(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${postalCode}&key=AIzaSyCpwMe7tW66lpnDogJ3QkE_0T3muucADnY`,
+        )
+        .then((res) => {
+          console.log(res);
+          if (res.data.status === 'OK') {
+            if (
+              res.data.results[0].address_components[2].short_name
+              === 'Amsterdam'
+            ) {
+              console.log('In amsterdam');
+              this.coordinates.lat = res.data.results[0].geometry.location.lat;
+              this.coordinates.lon = res.data.results[0].geometry.location.lng;
+
+              // Get students
+              const { db } = this.$store.state;
+              db.collection('students')
+                .get()
+                .then((querySnapshot) => {
+                  this.students = querySnapshot.docs;
+                  querySnapshot.forEach((doc) => {
+                    console.log(doc.data());
+                  });
+                });
+            } else {
+              this.$router.push(`buitenpostcode?postcode=${postalCode}`);
+            }
+          } else {
+            this.$toast.open({
+              duration: 5000,
+              message:
+                'We kunnen jouw postcode helaas niet vinden. Probeer het opnieuw.',
+              type: 'is-danger',
+            });
+          }
+        });
+    }
+
     this.month = this.months.filter(
       item => item.value === this.date.getMonth(),
     )[0].name;
@@ -306,6 +416,7 @@ export default {
         this.date.setMonth(option.value);
       }
     },
+    getStudents() {},
   },
 };
 </script>

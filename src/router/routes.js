@@ -4,6 +4,7 @@ import Login from '../views/auth/Login.vue';
 import SignUp from '../views/auth/SignUp.vue';
 import ForStudents from '../views/ForStudents.vue';
 import Search from '../views/Search.vue';
+import OutsidePostalCode from '../views/OutsidePostalCode.vue';
 // import Dashboard from '../views/Dashboard.vue';
 
 // Export routes for vue router
@@ -38,6 +39,11 @@ export default [
     path: '/zoeken',
     name: 'Search',
     component: Search,
+  },
+  {
+    path: '/buitenpostcode',
+    name: 'BuitenPostcode',
+    component: OutsidePostalCode,
   },
   {
     path: '/dashboard',

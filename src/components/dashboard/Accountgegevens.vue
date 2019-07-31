@@ -148,18 +148,7 @@ export default {
       this.email = userData.email;
       this.phoneNumber = userData.phoneNumber;
       this.scholier = userData.scholier;
-      // this.scholier.leeftijd = userData.scholier
-      //   ? userData.scholier.leeftijd
-      //   : '';
-      // this.scholier.niveau = userData.scholier ? userData.scholier.niveau : '';
       this.adresInfo = userData.adresInfo;
-      // this.adresInfo.adres = userData.adresInfo ? userData.adresInfo.adres : '';
-      // this.adresInfo.postcode = userData.adresInfo
-      //   ? userData.adresInfo.postcode
-      //   : '';
-      // this.adresInfo.plaats = userData.adresInfo
-      //   ? userData.adresInfo.plaats
-      //   : '';
       this.isLoading = false;
     });
   },

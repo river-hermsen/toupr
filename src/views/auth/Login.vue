@@ -39,7 +39,6 @@
       <b-button
         type="is-primary"
         class="login-button-container"
-        :class="{ 'is-loading': isLoading }"
         @click="handleLogin"
         ref="loginBtn"
       >Login</b-button>
