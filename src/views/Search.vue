@@ -63,7 +63,7 @@
             <b-input
               class="call-input"
               v-model="phoneNumber"
-              v-validate="'required|numeric|max:10'"
+              v-validate="'required|numeric|min :10'"
               data-vv-name="Telefoonnummer"
               placeholder="Telefoonnummer"
             ></b-input>
@@ -78,36 +78,24 @@
           </div>
           <div class="input-header-container">
             <b-datepicker
-              :focused-date="date"
+              :focused-date="new Date()"
               :first-day-of-week="1"
-              :min-date="new Date()"
-              v-model="datePicker"
+              :min-date="new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2)"
+              :max-date="new Date(new Date().getFullYear(), new Date().getMonth()+1, new Date().getDate())"
+              v-model="searchInfo.datePicker"
               class="date-picker-input"
               placeholder="Datum"
               icon="calendar-today"
-            >
-              <template slot="header">
-                <b-field class="datePickerMonthField">
-                  <b-autocomplete
-                    open-on-focus
-                    readonly
-                    v-model="month"
-                    :data="months"
-                    field="name"
-                    @select="selectMonth"
-                  ></b-autocomplete>
-                </b-field>
-              </template>
-            </b-datepicker>
+            ></b-datepicker>
             <div class="select how-often-input">
-              <select v-model="howOften">
+              <select v-model="searchInfo.howOften">
                 <option disabled value>Hoe vaak?</option>
                 <option>Eenmalig</option>
                 <option>Wekelijks</option>
               </select>
             </div>
             <div class="select">
-              <select v-model="period">
+              <select v-model="searchInfo.period">
                 <option disabled value>Hoelaat?</option>
                 <option>Maakt niet uit</option>
                 <option>16:00 - 18:00</option>
@@ -117,14 +105,17 @@
           </div>
         </div>
         <div class="students-content" ref="studentsContent">
-          <div class="student-container">
+          <div class="student-container" v-for="student in students" :key="student.id">
             <div class="columns student-columns">
-              <div class="column is-3 student-image"></div>
+              <div
+                class="column is-3 student-image"
+                :style="{backgroundImage: 'url(' + student.photoURL + ')'}"
+              ></div>
               <div class="column is-7">
                 <div class="columns">
-                  <h4 class="column is-8 is-size-4 student-name">Hidde</h4>
+                  <h4 class="column is-8 is-size-4 student-name">{{student.name.fname}}</h4>
                   <h5 class="column is-4 student-price">
-                    <span class="is-size-6">€ 15,50</span>
+                    <span class="is-size-6">€ {{student.price}}</span>
                     <span class="is-size-7">&ensp;per uur</span>
                   </h5>
                 </div>
@@ -245,6 +236,9 @@
     .date-picker-input {
       width: 9rem;
       margin-right: 1rem;
+      input {
+        cursor: pointer;
+      }
     }
     .how-often-input {
       margin-right: 1rem;
@@ -307,29 +301,16 @@ export default {
     return {
       isInfoModalActive: false,
       phoneNumber: null,
-      date: new Date(),
-      month: null,
-      months: [
-        { name: 'January', value: 0 },
-        { name: 'February', value: 1 },
-        { name: 'March', value: 2 },
-        { name: 'April', value: 3 },
-        { name: 'May', value: 4 },
-        { name: 'June', value: 5 },
-        { name: 'July', value: 6 },
-        { name: 'August', value: 7 },
-        { name: 'September', value: 8 },
-        { name: 'October', value: 9 },
-        { name: 'November', value: 10 },
-        { name: 'December', value: 11 },
-      ],
-      datePicker: null,
-      howOften: '',
-      period: '',
       coordinates: {
         lat: null,
         lon: null,
       },
+      searchInfo: {
+        datePicker: null,
+        howOften: '',
+        period: '',
+      },
+      students: [],
     };
   },
   mounted() {
@@ -352,17 +333,8 @@ export default {
               console.log('In amsterdam');
               this.coordinates.lat = res.data.results[0].geometry.location.lat;
               this.coordinates.lon = res.data.results[0].geometry.location.lng;
-
               // Get students
-              const { db } = this.$store.state;
-              db.collection('students')
-                .get()
-                .then((querySnapshot) => {
-                  this.students = querySnapshot.docs;
-                  querySnapshot.forEach((doc) => {
-                    console.log(doc.data());
-                  });
-                });
+              this.getStudents();
             } else {
               this.$router.push(`buitenpostcode?postcode=${postalCode}`);
             }
@@ -376,10 +348,6 @@ export default {
           }
         });
     }
-
-    this.month = this.months.filter(
-      item => item.value === this.date.getMonth(),
-    )[0].name;
   },
   methods: {
     submitCallMoreInfo() {
@@ -416,7 +384,35 @@ export default {
         this.date.setMonth(option.value);
       }
     },
-    getStudents() {},
+    getStudents() {
+      // Getting students
+      const { db } = this.$store.state;
+      db.collection('students')
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const studentData = doc.data();
+            studentData.id = doc.ref.id;
+            this.students.push(studentData);
+          });
+        });
+    },
+  },
+  computed: {
+    searchQuery() {
+      return this.searchInfo;
+    },
+  },
+  watch: {
+    searchQuery: {
+      handler() {
+        console.log('query changed');
+        console.log(this);
+
+        this.getStudents();
+      },
+      deep: true,
+    },
   },
 };
 </script>
