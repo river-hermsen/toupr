@@ -83,6 +83,7 @@
               :min-date="new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2)"
               :max-date="new Date(new Date().getFullYear(), new Date().getMonth()+1, new Date().getDate())"
               v-model="searchInfo.datePicker"
+              ref="datePickerEl"
               class="date-picker-input"
               placeholder="Datum"
               icon="calendar-today"
@@ -105,6 +106,11 @@
           </div>
         </div>
         <div class="students-content" ref="studentsContent">
+          <!-- <b-loading :is-full-page="loader.isFullPage" :active.sync="loader.isLoading"></b-loading> -->
+          <h3
+            v-if="noResultsFound"
+            class="is-size-5 no-results-found"
+          >Er zijn geen resultaten gevonden met uw zoekcriteria</h3>
           <div class="student-container" v-for="student in students" :key="student.id">
             <div class="columns student-columns">
               <div
@@ -247,6 +253,9 @@
 }
 
 .students-content {
+  .no-results-found {
+    margin-top: 1.2rem;
+  }
   .student-container {
     border-radius: 5px;
     background-color: white;
@@ -299,6 +308,10 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      loader: {
+        isFullPage: false,
+        isLoading: true,
+      },
       isInfoModalActive: false,
       phoneNumber: null,
       coordinates: {
@@ -311,10 +324,14 @@ export default {
         period: '',
       },
       students: [],
+      noResultsFound: true,
     };
   },
   mounted() {
-    console.log(this);
+    const { datePickerEl } = this.$refs;
+    datePickerEl.focusedDate = new Date().getMonth() + 1;
+    datePickerEl.toggle();
+    console.log(datePickerEl);
     const postalCode = this.$route.query.postcode;
     if (!postalCode || postalCode === '') {
       this.$router.push('/');
@@ -387,14 +404,27 @@ export default {
     getStudents() {
       // Getting students
       const { db } = this.$store.state;
+      const dayOfWeek = new Date(this.searchInfo.datePicker).getDay();
+      console.log(dayOfWeek);
       db.collection('students')
+        .where('availableDayOfWeek', 'array-contains', dayOfWeek)
         .get()
         .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const studentData = doc.data();
-            studentData.id = doc.ref.id;
-            this.students.push(studentData);
-          });
+          this.students = [];
+          console.log(querySnapshot);
+          if (querySnapshot.docs.length !== 0) {
+            this.noResultsFound = false;
+            querySnapshot.forEach((doc) => {
+              const studentData = doc.data();
+              studentData.id = doc.ref.id;
+              this.students.push(studentData);
+            });
+          } else {
+            this.noResultsFound = true;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
         });
     },
   },
