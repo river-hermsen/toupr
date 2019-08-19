@@ -54,6 +54,15 @@ export default [
     },
   },
   {
+    path: '/testdashboard',
+    name: 'TestDashboard',
+    component: () => import(/* webpackChunkName: "dashboard" */ '../views/TestDashboard.vue'),
+    meta: {
+      requiredAuth: true,
+    },
+  },
+
+  {
     path: '/test',
     name: 'Test',
     component: () => import(/* webpackChunkName: "dashboard" */ '../views/Test.vue'),

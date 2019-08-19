@@ -41,7 +41,6 @@ $family-primary: "Poppins", sans-serif;
 #content {
   padding-top: 5rem;
   min-height: calc(100vh - 4rem);
-  background-color: #fafafa;
 }
 @media only screen and (max-width: 1024px) {
   #content {

@@ -329,7 +329,11 @@ export default {
   },
   mounted() {
     const { datePickerEl } = this.$refs;
-    datePickerEl.focusedDate = new Date().getMonth() + 1;
+    // const currentMonth = new Date().getMonth();
+    // datePickerEl.focusedDate = currentMonth + 3;
+    console.log('Mounted');
+    console.log(datePickerEl);
+
     datePickerEl.toggle();
     console.log(datePickerEl);
     const postalCode = this.$route.query.postcode;

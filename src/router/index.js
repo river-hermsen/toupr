@@ -19,9 +19,23 @@ router.beforeEach((to, from, next) => {
       // console.log('User is signed in');
       store.commit('changeLoginState', true);
       store.commit('addUserData', user);
-      next();
-      if (to.meta.requiredAuth === false) {
-        next('/dashboard');
+      if (!store.state.userInfo) {
+        const { db } = store.state;
+        const { uid } = store.state.userData;
+        const docRef = db.collection('users').doc(uid);
+        docRef.get().then((doc) => {
+          console.log('Refreshed user info.');
+          const userInfo = doc.data();
+          store.commit('addUserInfo', userInfo);
+        }).then(() => {
+          if (to.meta.requiredAuth === false) {
+            next('/testdashboard');
+          } else {
+            next();
+          }
+        });
+      } else if (to.meta.requiredAuth === false) {
+        next('/testdashboard');
       } else {
         next();
       }
