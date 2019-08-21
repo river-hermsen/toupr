@@ -1,7 +1,7 @@
 <template>
   <div class="container-login">
+    <h3 class="title">Inloggen</h3>
     <b-message type="is-danger" v-if="errorLogin.is">{{errorLogin.msg}}</b-message>
-
     <div>
       <b-field
         label="Email"
@@ -53,6 +53,10 @@
   margin: 2rem auto;
   padding: 2rem;
 }
+.title {
+  font-size: 2.25rem;
+}
+
 .message {
   font-size: 0.9rem;
 }

@@ -100,6 +100,10 @@ nav {
   font-size: 1.2rem;
 }
 
+.navbar-item {
+  padding: 0.5rem 1.5rem 0.5rem 1rem;
+}
+
 .navbar-brand {
   max-height: 3.25rem;
 }

@@ -61,10 +61,18 @@ export default [
       requiredAuth: true,
     },
   },
-
   {
     path: '/test',
     name: 'Test',
     component: () => import(/* webpackChunkName: "dashboard" */ '../views/Test.vue'),
+  },
+  {
+    path: '/404',
+    name: 'NotFound',
+    component: () => import(/* webpackChunkName: "dashboard" */ '../views/404.vue'),
+  },
+  {
+    path: '*',
+    redirect: '/404',
   },
 ];

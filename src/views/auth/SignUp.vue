@@ -1,5 +1,6 @@
 <template>
   <div class="container-signup">
+    <h3 class="title">Aanmelden</h3>
     <b-message type="is-danger" v-if="errorLogin.is">{{errorLogin.msg}}</b-message>
     <div>
       <b-field
@@ -68,6 +69,10 @@
   margin: 2rem auto;
   padding: 2rem;
 }
+.title {
+  font-size: 2.25rem;
+}
+
 .password-button-container {
   margin-top: 1.2rem;
   height: 30px;
