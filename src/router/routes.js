@@ -46,17 +46,17 @@ export default [
     component: OutsidePostalCode,
   },
   {
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue'),
+    path: '/olddashboard',
+    name: 'OldDashboard',
+    component: () => import(/* webpackChunkName: "dashboard" */ '../views/OldDashboard.vue'),
     meta: {
       requiredAuth: true,
     },
   },
   {
-    path: '/testdashboard',
-    name: 'TestDashboard',
-    component: () => import(/* webpackChunkName: "dashboard" */ '../views/TestDashboard.vue'),
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue'),
     meta: {
       requiredAuth: true,
     },

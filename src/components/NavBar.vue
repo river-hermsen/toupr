@@ -37,7 +37,7 @@
               tag="span"
             >Aanmelden</router-link>
             <router-link
-              to="testdashboard"
+              to="dashboard"
               class="router-link-nav-bar link-nav-bar"
               v-if="isLoggedIn === true"
               tag="span"

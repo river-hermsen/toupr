@@ -1,184 +1,138 @@
 <template>
-  <div id="dashboard">
-    <div class="columns">
-      <div class="column is-3 side-menu">
-        <div class="info-account">
-          <img src="../assets/logo-icons/default-avatar.svg" class="avatar image is-48x48" />
-          <h4 class="welcome-title">Welkom {{fNaam}}</h4>
-          <br />
-          <h5 class="welcome-what-title">Ouder</h5>
-        </div>
-        <div class="menu-items">
-          <div
-            class="item border-left"
-            @click="currentTab = 'MijnStudenten'"
-            :class="currentTab === 'MijnStudenten' ? 'active-border-left' : null"
-          >
-            <img src="../assets/logo-icons/001-home-icon-silhouette.svg" class="image is-16x16" />
-            <span class="text">Mijn Studenten</span>
-          </div>
-          <div
-            class="item border-left"
-            @click="currentTab = 'Agenda'"
-            :class="currentTab === 'Agenda' ? 'active-border-left' : null"
-          >
-            <img src="../assets/logo-icons/003-calendar.svg" class="image is-16x16" />
-            <span class="text">Agenda</span>
-          </div>
-          <div
-            class="item border-left"
-            @click="currentTab = 'SessieHistorie'"
-            :class="currentTab === 'SessieHistorie' ? 'active-border-left' : null"
-          >
-            <img src="../assets/logo-icons/005-history-clock-button.svg" class="image is-16x16" />
-            <span class="text">Sessiehistorie</span>
-          </div>
-          <div
-            class="item border-left"
-            @click="currentTab = 'AccountGegevens'"
-            :class="currentTab === 'AccountGegevens' ? 'active-border-left' : null"
-          >
-            <img src="../assets/logo-icons/004-man-user.svg" class="image is-16x16" />
-            <span class="text">Accountgegevens</span>
-          </div>
-          <div class="item item-logout" @click="handleLogOut()">
-            <img src="../assets/logo-icons/006-logout.svg" class="image is-16x16" />
-            <span class="text">Uitloggen</span>
-          </div>
-        </div>
+  <div class="container">
+    <div class="header">
+      <h1 class="title is-size-2">Hoi, {{fNaamComp}}</h1>
+    </div>
+    <div>
+      <div class="tabs">
+        <ul>
+          <li @click="activeTab=0" v-bind:class="{ 'is-active': activeTab===0 ? true : false }">
+            <a>
+              <b-icon icon="book"></b-icon>
+              <span>Mijn Studenten</span>
+            </a>
+          </li>
+          <li @click="activeTab=1" v-bind:class="{ 'is-active': activeTab===1 ? true : false }">
+            <a>
+              <b-icon icon="calendar-month-outline"></b-icon>
+              <span>Agenda</span>
+            </a>
+          </li>
+          <li @click="activeTab=2" v-bind:class="{ 'is-active': activeTab===2 ? true : false }">
+            <a>
+              <b-icon icon="history"></b-icon>
+              <span>Sessiehistorie</span>
+            </a>
+          </li>
+          <li @click="activeTab=3" v-bind:class="{ 'is-active': activeTab===3 ? true : false }">
+            <a>
+              <b-icon icon="account"></b-icon>
+              <span>Accountgegevens</span>
+            </a>
+          </li>
+          <li class="log-out" @click="handleLogOut()">
+            <a>
+              <b-icon icon="exit-to-app"></b-icon>
+              <span>Uitloggen</span>
+            </a>
+          </li>
+        </ul>
       </div>
-      <div class="column is-9 content-dashboard">
-        <MijnStudenten v-if="currentTab === 'MijnStudenten'" />
-        <Agenda v-if="currentTab === 'Agenda'" />
-        <SessieHistorie v-if="currentTab === 'SessieHistorie'" />
-        <AccountGegevens v-if="currentTab === 'AccountGegevens'" class="content-card" />
+      <div class="content-tabs">
+        <MijnStudenten v-if="activeTab===0" />
+        <Agenda v-if="activeTab===1" />
+        <SessieHistorie v-if="activeTab===2" />
+        <AccountGegevens v-if="activeTab===3" />
       </div>
+
+      <!-- <b-tabs v-model="activeTab">
+        <b-tab-item label="Mijn Studenten" icon="book">
+          <MijnStudenten />
+        </b-tab-item>
+
+        <b-tab-item label="Agenda" icon="calendar-month-outline">
+          <Agenda />
+        </b-tab-item>
+
+        <b-tab-item label="Sessiehistorie" icon="history">
+          <SessieHistorie />
+        </b-tab-item>
+        <b-tab-item label="Accountgegevens" icon="account">
+          <AccountGegevens />
+        </b-tab-item>
+        <b-tab-item label="Uitloggen" icon="exit-to-app" @click="handleLogOut()">Logging out....</b-tab-item>
+      </b-tabs>-->
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-#dashboard {
+.container {
   max-width: 900px;
-  margin: 0 auto;
-  margin-top: 2rem;
+  margin-top: 30px;
 }
-
-.side-menu {
-  background-color: #fff;
-  margin-right: 40px;
-  box-shadow: 0px 1px 14px -10px rgba(0, 0, 0, 0.75);
-  padding: 0rem;
-  max-height: fit-content;
+.title {
+  margin-bottom: 1.2rem;
+  padding: 0.5rem 1rem;
 }
-.content-dashboard {
-  padding-top: 0rem;
-}
-.content-card {
-  background-color: #fff;
-  box-shadow: 0px 1px 14px -10px rgba(0, 0, 0, 0.75);
-  padding: 1.4rem 2rem 2rem 2rem;
-}
-.info-account {
-  padding: 1.5rem 0rem 1rem 1rem;
-}
-
-.avatar {
-  float: left;
-  margin-left: 1rem;
-}
-
-.welcome-title {
-  font-size: 0.9rem;
-  display: inline;
-  padding: 1.3rem;
-}
-
-.welcome-what-title {
-  font-size: 0.8rem;
-  padding: 1.3rem;
-  display: inline;
-}
-
-.menu-items {
-  padding-top: 1rem;
-  .active-border-left {
-    border-left: 5px solid #52d3aa;
+.tabs {
+  width: 100%;
+  li.is-active a {
+    border-bottom-color: #52d3aa;
+    color: #52d3aa;
   }
-  .border-left:hover {
-    border-left: 5px solid #52d3aa;
-  }
-  .item {
-    cursor: pointer;
-    height: 4rem;
-    display: inline-flex;
-    align-items: center;
-    width: 100%;
-    padding-left: 2rem;
-    .image {
-      opacity: 0.6;
-      float: left;
-    }
-    .text {
-      margin-left: 20px;
-      height: 16px;
-      display: inline-flex;
-      font-size: 0.9rem;
-      align-items: center;
-    }
-  }
-  .item-logout {
-    margin-top: 1.5rem;
-  }
+}
+.content-tabs {
+  padding: 0.5rem 1rem;
+}
+.log-out {
+  margin-left: auto;
 }
 </style>
 
 <script>
-import firebase from 'firebase';
-import MijnStudenten from '../components/dashboard/MijnStudenten.vue';
-import Agenda from '../components/dashboard/Agenda.vue';
-import SessieHistorie from '../components/dashboard/SessieHistorie.vue';
-import AccountGegevens from '../components/dashboard/AccountGegevens.vue';
+import firebase from "firebase";
+import MijnStudenten from "../components/dashboard/MijnStudenten.vue";
+import Agenda from "../components/dashboard/Agenda.vue";
+import SessieHistorie from "../components/dashboard/SessieHistorie.vue";
+import AccountGegevens from "../components/dashboard/AccountGegevens.vue";
 
 export default {
   data() {
     return {
-      fNaam: '',
-      currentTab: 'MijnStudenten',
+      activeTab: 0,
+      fNaam: this.$store.state.userInfo.fNaam
     };
   },
   components: {
     MijnStudenten,
     Agenda,
     SessieHistorie,
-    AccountGegevens,
-  },
-  mounted() {
-    const { db } = this.$store.state;
-    const { uid } = this.$store.state.userData;
-    const docRef = db.collection('users').doc(uid);
-    docRef.get().then((doc) => {
-      const userData = doc.data();
-      this.fNaam = userData.fNaam;
-      console.log(userData);
-    });
+    AccountGegevens
   },
   methods: {
     handleLogOut() {
+      console.log("Logging out..");
+
       firebase
         .auth()
         .signOut()
-        .then((res) => {
+        .then(res => {
           // Sign-out successful.
           console.log(res);
-          this.$store.commit('changeLoginState', false);
-          this.$router.push('/');
+          this.$store.commit("changeLoginState", false);
+          this.$router.push("/");
         })
-        .catch((error) => {
+        .catch(error => {
           // An error happened.
           console.log(error);
         });
-    },
+    }
   },
+  computed: {
+    fNaamComp() {
+      return this.$store.state.userInfo.fNaam;
+    }
+  }
 };
 </script>
