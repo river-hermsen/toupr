@@ -117,17 +117,19 @@
 </style>
 
 <script>
+import store from '../../store';
+
 export default {
   data() {
     return {
       uid: this.$store.state.userData.uid,
-      userInfo: [],
+      userInfo: {},
+      isLoading: true,
     };
   },
-  created() {
-    console.log(this.$store.state.userInfo);
-    const { userInfo } = this.$store.state;
-    this.userInfo = userInfo;
+  beforeMount() {
+    // Quick fix to make vue data non reactive and only store data in Vuex when neeeded.
+    this.userInfo = JSON.parse(JSON.stringify(store.getters.getUserInfo));
     this.isLoading = false;
   },
   methods: {
@@ -145,7 +147,11 @@ export default {
           adresInfo: this.userInfo.adresInfo,
         })
         .then(() => {
-          this.$store.commit('addUserInfo', this.userInfo);
+          // Quick fix to make vue data non reactive
+          this.$store.commit(
+            'addUserInfo',
+            JSON.parse(JSON.stringify(this.userInfo)),
+          );
         })
         .then(() => {
           this.isLoading = false;

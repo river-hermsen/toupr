@@ -62,6 +62,13 @@ $family-primary: "Poppins", sans-serif;
     display: none;
   }
 }
+
+.loading-overlay {
+  z-index: 99;
+  .loading-icon {
+    z-index: 99;
+  }
+}
 </style>
 
 <script>

@@ -77,8 +77,14 @@
 }
 .tabs {
   width: 100%;
+  li.is-active a {
+    border-bottom-color: #52d3aa;
+    color: #52d3aa;
+  }
 }
-
+.content-tabs {
+  padding: 0.5rem 1rem;
+}
 .log-out {
   margin-left: auto;
 }
@@ -94,7 +100,7 @@ import AccountGegevens from '../components/dashboard/AccountGegevens.vue';
 export default {
   data() {
     return {
-      activeTab: 0,
+      activeTab: 1,
       fNaam: this.$store.state.userInfo.fNaam,
     };
   },

@@ -24,4 +24,7 @@ export default new Vuex.Store({
       state.db = db;
     },
   },
+  getters: {
+    getUserInfo: state => state.userInfo,
+  },
 });
