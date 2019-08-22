@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="header">
-      <h1 class="title is-size-2">Hoi, {{fNaamComp}}</h1>
+      <h1 class="title is-size-2">Hoi{{fNaamComp ? ', ' + fNaamComp : ''}}</h1>
     </div>
     <div>
       <div class="tabs">
@@ -44,24 +44,6 @@
         <SessieHistorie v-if="activeTab===2" />
         <AccountGegevens v-if="activeTab===3" />
       </div>
-
-      <!-- <b-tabs v-model="activeTab">
-        <b-tab-item label="Mijn Studenten" icon="book">
-          <MijnStudenten />
-        </b-tab-item>
-
-        <b-tab-item label="Agenda" icon="calendar-month-outline">
-          <Agenda />
-        </b-tab-item>
-
-        <b-tab-item label="Sessiehistorie" icon="history">
-          <SessieHistorie />
-        </b-tab-item>
-        <b-tab-item label="Accountgegevens" icon="account">
-          <AccountGegevens />
-        </b-tab-item>
-        <b-tab-item label="Uitloggen" icon="exit-to-app" @click="handleLogOut()">Logging out....</b-tab-item>
-      </b-tabs>-->
     </div>
   </div>
 </template>
@@ -91,48 +73,46 @@
 </style>
 
 <script>
-import firebase from "firebase";
-import MijnStudenten from "../components/dashboard/MijnStudenten.vue";
-import Agenda from "../components/dashboard/Agenda.vue";
-import SessieHistorie from "../components/dashboard/SessieHistorie.vue";
-import AccountGegevens from "../components/dashboard/AccountGegevens.vue";
+import firebase from 'firebase';
+import MijnStudenten from '../components/dashboard/MijnStudenten.vue';
+import Agenda from '../components/dashboard/Agenda.vue';
+import SessieHistorie from '../components/dashboard/SessieHistorie.vue';
+import AccountGegevens from '../components/dashboard/AccountGegevens.vue';
 
 export default {
   data() {
     return {
       activeTab: 0,
-      fNaam: this.$store.state.userInfo.fNaam
+      fNaam: this.$store.state.userInfo.fNaam,
     };
   },
   components: {
     MijnStudenten,
     Agenda,
     SessieHistorie,
-    AccountGegevens
+    AccountGegevens,
   },
   methods: {
     handleLogOut() {
-      console.log("Logging out..");
-
+      this.$destroy();
       firebase
         .auth()
         .signOut()
-        .then(res => {
+        .then(() => {
           // Sign-out successful.
-          console.log(res);
-          this.$store.commit("changeLoginState", false);
-          this.$router.push("/");
+          this.$store.commit('changeLoginState', false);
+          this.$router.push('/');
         })
-        .catch(error => {
+        .catch((error) => {
           // An error happened.
           console.log(error);
         });
-    }
+    },
   },
   computed: {
     fNaamComp() {
       return this.$store.state.userInfo.fNaam;
-    }
-  }
+    },
+  },
 };
 </script>

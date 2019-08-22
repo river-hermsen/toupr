@@ -9,7 +9,7 @@
       </h1>
     </div>
     <div class="columns">
-      <div class="column is-5">
+      <div class="column is-5 agenda-container">
         <b-datepicker
           v-model="date"
           inline
@@ -83,13 +83,25 @@
   color: #ff3860;
 }
 </style>
+<style lang="scss">
+.agenda-container .dropdown-menu {
+  width: 100%;
+}
+.agenda-container .dropdown-content {
+  width: 100%;
+}
+
+.agenda-container .dropdown-item {
+  width: 100%;
+}
+</style>
 
 <script>
 export default {
   data() {
     return {
       isLoading: true,
-      date: new Date(),
+      date: null,
       currentDate: new Date().setHours(0),
       minDatePicker: null,
       maxDatePicker: null,
@@ -119,6 +131,8 @@ export default {
       .get()
       .then(snapshot => {
         snapshot.docs.map(doc => {
+          console.log(doc.data());
+
           const dateTime = new Date(doc.data().dateTime.seconds * 1000);
           const studentID = doc.data().studentID;
           const acceptedSession = doc.data().accepted;

@@ -29,13 +29,13 @@ router.beforeEach((to, from, next) => {
           store.commit('addUserInfo', userInfo);
         }).then(() => {
           if (to.meta.requiredAuth === false) {
-            next('/testdashboard');
+            next('/dashboard');
           } else {
             next();
           }
         });
       } else if (to.meta.requiredAuth === false) {
-        next('/testdashboard');
+        next('/dashboard');
       } else {
         next();
       }
