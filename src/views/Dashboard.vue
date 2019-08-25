@@ -50,7 +50,7 @@
 
 <style lang="scss" scoped>
 .container {
-  max-width: 900px;
+  max-width: 1050px;
   margin-top: 30px;
 }
 .title {

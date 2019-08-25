@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" ref="element">
     <navBar />
     <div id="content">
       <router-view />
@@ -72,11 +72,27 @@ $family-primary: "Poppins", sans-serif;
 </style>
 
 <script>
+// eslint-disable-next-line
+import { Loading } from "buefy";
 import navBar from './components/NavBar.vue';
 
 export default {
+  data() {
+    return {
+      isFullPage: true,
+    };
+  },
   components: {
     navBar,
+  },
+  beforeCreate() {
+    const loadingComponent = this.$loading.open({
+      container: null,
+    });
+    this.loadingComponent = loadingComponent;
+  },
+  mounted() {
+    this.loadingComponent.close();
   },
 };
 </script>

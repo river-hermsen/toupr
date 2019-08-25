@@ -126,7 +126,16 @@
                   </h5>
                 </div>
               </div>
-              <div class="column is-2 student-select"></div>
+              <router-link
+                tag="div"
+                :to="'/student/' + student.id"
+                class="column is-2 student-select"
+              >
+                <h3>Bekijk het profiel van {{student.name.fname}}</h3>
+                <div class="student-select-icon">
+                  <b-icon icon="arrow-right"></b-icon>
+                </div>
+              </router-link>
             </div>
           </div>
         </div>
@@ -293,6 +302,15 @@
     }
     .student-select {
       border-left: 1px solid #ebebeb;
+      width: 20%;
+      padding-top: 7%;
+      h3 {
+        text-align: center;
+      }
+      .student-select-icon {
+        display: flex;
+        justify-content: center;
+      }
     }
   }
 }

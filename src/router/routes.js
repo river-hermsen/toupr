@@ -5,6 +5,7 @@ import SignUp from '../views/auth/SignUp.vue';
 import ForStudents from '../views/ForStudents.vue';
 import Search from '../views/Search.vue';
 import OutsidePostalCode from '../views/OutsidePostalCode.vue';
+import NotFound from '../views/404.vue';
 // import Dashboard from '../views/Dashboard.vue';
 
 // Export routes for vue router
@@ -41,6 +42,11 @@ export default [
     component: Search,
   },
   {
+    path: '/student/:id',
+    name: 'StudentProfile',
+    component: () => import(/* webpackChunkName: "StudentProfile" */ '../views/StudentProfile.vue'),
+  },
+  {
     path: '/buitenpostcode',
     name: 'BuitenPostcode',
     component: OutsidePostalCode,
@@ -48,7 +54,7 @@ export default [
   {
     path: '/olddashboard',
     name: 'OldDashboard',
-    component: () => import(/* webpackChunkName: "dashboard" */ '../views/OldDashboard.vue'),
+    component: () => import(/* webpackChunkName: "OldDashboard" */ '../views/OldDashboard.vue'),
     meta: {
       requiredAuth: true,
     },
@@ -56,7 +62,7 @@ export default [
   {
     path: '/dashboard',
     name: 'Dashboard',
-    component: () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue'),
+    component: () => import(/* webpackChunkName: "Dashboard" */ '../views/Dashboard.vue'),
     meta: {
       requiredAuth: true,
     },
@@ -64,12 +70,12 @@ export default [
   {
     path: '/test',
     name: 'Test',
-    component: () => import(/* webpackChunkName: "dashboard" */ '../views/Test.vue'),
+    component: () => import(/* webpackChunkName: "Test" */ '../views/Test.vue'),
   },
   {
     path: '/404',
     name: 'NotFound',
-    component: () => import(/* webpackChunkName: "dashboard" */ '../views/404.vue'),
+    component: NotFound,
   },
   {
     path: '*',

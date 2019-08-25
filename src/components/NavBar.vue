@@ -31,13 +31,13 @@
               tag="span"
             >Log in</router-link>
             <router-link
-              to="signup"
+              to="/signup"
               class="router-link-nav-bar link-nav-bar"
               v-if="isLoggedIn === false"
               tag="span"
             >Aanmelden</router-link>
             <router-link
-              to="dashboard"
+              to="/dashboard"
               class="router-link-nav-bar link-nav-bar"
               v-if="isLoggedIn === true"
               tag="span"
