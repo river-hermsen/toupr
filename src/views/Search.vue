@@ -117,13 +117,33 @@
                 class="column is-3 student-image"
                 :style="{backgroundImage: 'url(' + student.photoURL + ')'}"
               ></div>
-              <div class="column is-7">
-                <div class="columns">
+              <div class="column is-7 student-info">
+                <div class="columns student-name-price">
                   <h4 class="column is-8 is-size-4 student-name">{{student.name.fname}}</h4>
                   <h5 class="column is-4 student-price">
                     <span class="is-size-6">€ {{student.price}}</span>
                     <span class="is-size-7">&ensp;per uur</span>
                   </h5>
+                </div>
+                <div class="columns">
+                  <div class="column is-12 student-rating">
+                    <div class="student-stars">
+                      <b-icon icon="star" v-if="student.reviews.rating >= 1"></b-icon>
+                      <b-icon icon="star-outline" v-else></b-icon>
+                      <b-icon icon="star" v-if="student.reviews.rating >= 2"></b-icon>
+                      <b-icon icon="star-outline" v-else></b-icon>
+                      <b-icon icon="star" v-if="student.reviews.rating >= 3"></b-icon>
+                      <b-icon icon="star-outline" v-else></b-icon>
+                      <b-icon icon="star" v-if="student.reviews.rating >= 4"></b-icon>
+                      <b-icon icon="star-outline" v-else></b-icon>
+                      <b-icon icon="star" v-if="student.reviews.rating >= 5"></b-icon>
+                      <b-icon icon="star-outline" v-else></b-icon>
+                    </div>
+                    <div class="student-amount-reviews">
+                      (
+                      <span>{{/* eslint-disable */ student.reviews.reviews.length <5 ? '<5' : student.reviews.reviews.length}}</span> beoordelingen)
+                    </div>
+                  </div>
                 </div>
               </div>
               <router-link
@@ -270,10 +290,10 @@
     background-color: white;
     height: 190px;
     max-width: 100%;
-    border: 1px solid #ebebeb;
     margin-top: 1.2rem;
-    cursor: pointer;
     box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.06);
+    border-top: 1px solid #ebebeb;
+    border-bottom: 1px solid #ebebeb;
     .student-columns {
       margin: 0px;
     }
@@ -289,28 +309,70 @@
       background-position: center;
       background-size: cover;
     }
-    .student-name {
-      margin-left: 0.3rem;
-      font-weight: 600;
-    }
-    .student-price {
-      display: flex;
-      align-items: center;
-    }
-    .student-price > :first-child {
-      font-weight: 600;
+    .student-info {
+      .student-name {
+        padding-bottom: 0.1rem;
+        margin-left: 0.3rem;
+        font-weight: 600;
+      }
+      .student-price {
+        display: flex;
+        align-items: center;
+      }
+      .student-price > :first-child {
+        font-weight: 600;
+      }
+      .student-rating {
+        padding-top: 0rem;
+        padding-left: 1rem;
+        .student-stars {
+          display: contents;
+          color: #52d3aa;
+        }
+        .student-amount-reviews {
+          display: contents;
+        }
+      }
     }
     .student-select {
       border-left: 1px solid #ebebeb;
+      background-color: white;
       width: 20%;
       padding-top: 7%;
+      border-right: 1px solid #ebebeb;
+      border-top: 1px solid #ebebeb;
+      border-bottom: 1px solid #ebebeb;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      cursor: pointer;
       h3 {
         text-align: center;
       }
       .student-select-icon {
         display: flex;
         justify-content: center;
+        transform: translate(0px, 0px);
+        transition: transform ease-in-out 0.4s;
       }
+      &:hover {
+        border-top-right-radius: 5px;
+        border-right: 1px solid #52d3aa;
+        border-bottom: 1px solid #52d3aa;
+        border-top: 1px solid #52d3aa;
+        border-left: 1px solid #52d3aa;
+        border-bottom-right-radius: 5px;
+        color: #52d3aa;
+        .student-info {
+          background-color: hsla(160.93023255813952, 59.45%, 57.45%, 0.06);
+        }
+        .student-select-icon {
+          transform: translate(10px, 0px);
+          transition: transform ease-in-out 0.4s;
+        }
+      }
+    }
+    &:hover {
+      background-color: hsla(160.93023255813952, 59.45%, 57.45%, 0.06);
     }
   }
 }
@@ -321,55 +383,47 @@
 </style>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   data() {
     return {
       loader: {
         isFullPage: false,
-        isLoading: true,
+        isLoading: true
       },
       isInfoModalActive: false,
       phoneNumber: null,
       coordinates: {
         lat: null,
-        lon: null,
+        lon: null
       },
       searchInfo: {
         datePicker: null,
-        howOften: '',
-        period: '',
+        howOften: "",
+        period: ""
       },
       students: [],
-      noResultsFound: true,
+      noResultsFound: true
     };
   },
   mounted() {
     const { datePickerEl } = this.$refs;
-    // const currentMonth = new Date().getMonth();
-    // datePickerEl.focusedDate = currentMonth + 3;
-    console.log('Mounted');
-    console.log(datePickerEl);
-
-    datePickerEl.toggle();
-    console.log(datePickerEl);
+    // datePickerEl.toggle();
     const postalCode = this.$route.query.postcode;
-    if (!postalCode || postalCode === '') {
-      this.$router.push('/');
+    if (!postalCode || postalCode === "") {
+      this.$router.push("/");
     } else {
       axios
         .get(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${postalCode}&key=AIzaSyCpwMe7tW66lpnDogJ3QkE_0T3muucADnY`,
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${postalCode}&key=AIzaSyCpwMe7tW66lpnDogJ3QkE_0T3muucADnY`
         )
-        .then((res) => {
-          console.log(res);
-          if (res.data.status === 'OK') {
+        .then(res => {
+          if (res.data.status === "OK") {
             if (
-              res.data.results[0].address_components[2].short_name
-              === 'Amsterdam'
+              res.data.results[0].address_components[2].short_name ===
+              "Amsterdam"
             ) {
-              console.log('In amsterdam');
               this.coordinates.lat = res.data.results[0].geometry.location.lat;
               this.coordinates.lon = res.data.results[0].geometry.location.lng;
               // Get students
@@ -381,8 +435,8 @@ export default {
             this.$toast.open({
               duration: 5000,
               message:
-                'We kunnen jouw postcode helaas niet vinden. Probeer het opnieuw.',
-              type: 'is-danger',
+                "We kunnen jouw postcode helaas niet vinden. Probeer het opnieuw.",
+              type: "is-danger"
             });
           }
         });
@@ -390,7 +444,7 @@ export default {
   },
   methods: {
     submitCallMoreInfo() {
-      this.$validator.validateAll().then((result) => {
+      this.$validator.validateAll().then(result => {
         if (!result) {
           // If there are errors in input
           // Remove loading button
@@ -399,20 +453,19 @@ export default {
 
         const { db } = this.$store.state;
 
-        db.collection('callBack')
+        db.collection("callBack")
           .doc()
           .set({
             phoneNumber: this.phoneNumber,
-            creationTime: new Date(),
+            creationTime: new Date()
           })
-          .then((res) => {
+          .then(() => {
             this.$toast.open({
-              message: 'We bellen je binnen een dag terug!',
-              type: 'is-success',
+              message: "We bellen je binnen een dag terug!",
+              type: "is-success"
             });
-            console.log(res);
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
           });
       });
@@ -427,16 +480,15 @@ export default {
       // Getting students
       const { db } = this.$store.state;
       const dayOfWeek = new Date(this.searchInfo.datePicker).getDay();
-      console.log(dayOfWeek);
-      db.collection('students')
-        .where('availableDayOfWeek', 'array-contains', dayOfWeek)
+      db.collection("students")
+        // .where('availableDayOfWeek', 'array-contains', dayOfWeek)
         .get()
-        .then((querySnapshot) => {
+        .then(querySnapshot => {
           this.students = [];
-          console.log(querySnapshot);
           if (querySnapshot.docs.length !== 0) {
             this.noResultsFound = false;
-            querySnapshot.forEach((doc) => {
+            querySnapshot.forEach(doc => {
+              console.log(doc.data());
               const studentData = doc.data();
               studentData.id = doc.ref.id;
               this.students.push(studentData);
@@ -445,26 +497,23 @@ export default {
             this.noResultsFound = true;
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
-    },
+    }
   },
   computed: {
     searchQuery() {
       return this.searchInfo;
-    },
+    }
   },
   watch: {
     searchQuery: {
       handler() {
-        console.log('query changed');
-        console.log(this);
-
         this.getStudents();
       },
-      deep: true,
-    },
-  },
+      deep: true
+    }
+  }
 };
 </script>

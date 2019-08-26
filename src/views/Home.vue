@@ -29,7 +29,7 @@
                 placeholder="Postcode"
                 v-model="postcode"
                 @keyup.native.enter="handleSearch"
-                v-validate="'required|max:6|min:6'"
+                v-validate="'required|max:7|min:6'"
               ></b-input>
             </b-field>
             <b-button type="input-button is-primary column is-3" @click="handleSearch">Zoeken</b-button>

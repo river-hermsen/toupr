@@ -18,8 +18,8 @@
             class="student-image"
           ></div>
           <div class="student-info">
-            <div>
-              <h3 class="is-size-5 student-name">{{student.name.fname}} {{student.name.lname}}</h3>
+            <div class="student-header-info">
+              <h3 class="is-size-4 student-name">{{student.name.fname}} {{student.name.lname}}</h3>
               <h5 class="student-amount-booked">{{student.amountBooked}}x geboekt door jouw.</h5>
             </div>
           </div>
@@ -55,12 +55,15 @@
     }
     .student-info {
       padding: 0.6rem;
-      display: inline-block;
+      .student-header-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
       .student-name {
-        float: left;
+        padding-left: 10px;
       }
       .student-amount-booked {
-        float: right;
       }
     }
   }
