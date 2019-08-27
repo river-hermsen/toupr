@@ -111,6 +111,16 @@
             v-if="noResultsFound"
             class="is-size-5 no-results-found"
           >Er zijn geen resultaten gevonden met uw zoekcriteria</h3>
+          <div class="wrapper" v-if="isLoadingResults">
+            <div
+              class="card-loader card-loader--tabs"
+              v-for="loader in amountOfLoaders"
+              :key="loader"
+            >
+              <div class="card-loader-image"></div>
+              <div class="card-loader-name"></div>
+            </div>
+          </div>
           <div class="student-container" v-for="student in students" :key="student.id">
             <div class="columns student-columns">
               <div
@@ -143,6 +153,29 @@
                       (
                       <span>{{/* eslint-disable */ student.reviews.reviews.length <5 ? '<5' : student.reviews.reviews.length}}</span> beoordelingen)
                     </div>
+                  </div>
+                </div>
+                <div class="columns">
+                  <div class="column is-12 student-short-bio">
+                    <p>
+                      {{student.bio.short.length > 68 ? student.bio.short.substring(0, 68) + '...' : student.bio.short.length}}
+                      <router-link
+                        :to="'/student/' + student.id"
+                        v-if="student.bio.short.length > 68"
+                        class="student-short-bio-read-more"
+                      >Lees meer</router-link>
+                    </p>
+                  </div>
+                </div>
+                <div class="columns">
+                  <div class="column is-12 student-icons">
+                    <b-tooltip
+                      label="Geverifieerde Toupr Student"
+                      type="is-light"
+                      position="is-bottom"
+                    >
+                      <b-icon icon="shield-check"></b-icon>
+                    </b-tooltip>
                   </div>
                 </div>
               </div>
@@ -285,6 +318,79 @@
   .no-results-found {
     margin-top: 1.2rem;
   }
+  .wrapper {
+    width: 100%;
+  }
+  .card-loader {
+    background-color: #fff;
+    box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.06);
+    border: 1px solid #ebebeb;
+    border-radius: 5px;
+    position: relative;
+    margin-bottom: 1.2rem;
+    height: 190px;
+    overflow: hidden;
+    &:only-child {
+      margin-top: 0;
+    }
+    .card-loader-image {
+      width: 190px;
+      height: 189px;
+      float: left;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+      background-color: #ededed;
+    }
+    .card-loader-name {
+      width: 250px;
+      height: 35px;
+      display: inline-block;
+      background-color: #ededed;
+      margin: 0.75rem;
+    }
+    &:after {
+      content: "";
+      background-color: #333;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      animation-duration: 0.6s;
+      animation-iteration-count: infinite;
+      animation-name: loader-animate;
+      animation-timing-function: linear;
+      background: -webkit-linear-gradient(
+        left,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.6) 30%,
+        rgba(255, 255, 255, 0) 81%
+      );
+      background: -o-linear-gradient(
+        left,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.6) 30%,
+        rgba(255, 255, 255, 0) 81%
+      );
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.6) 30%,
+        rgba(255, 255, 255, 0) 81%
+      );
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#00ffffff',GradientType=1 );
+    }
+  }
+
+  // Loader animation
+  @keyframes loader-animate {
+    0% {
+      transform: translate3d(-100%, 0, 0);
+    }
+    100% {
+      transform: translate3d(100%, 0, 0);
+    }
+  }
   .student-container {
     border-radius: 5px;
     background-color: white;
@@ -332,6 +438,18 @@
         .student-amount-reviews {
           display: contents;
         }
+      }
+      .student-short-bio {
+        padding-top: 0rem;
+        padding-bottom: 0rem;
+        padding-left: 1rem;
+        .student-short-bio-read-more {
+          color: #52d3aa;
+          margin-left: 0.3rem;
+        }
+      }
+      .student-icons {
+        padding-left: 1rem;
       }
     }
     .student-select {
@@ -383,46 +501,48 @@
 </style>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 
 export default {
   data() {
     return {
       loader: {
         isFullPage: false,
-        isLoading: true
+        isLoading: true,
       },
       isInfoModalActive: false,
       phoneNumber: null,
       coordinates: {
         lat: null,
-        lon: null
+        lon: null,
       },
       searchInfo: {
         datePicker: null,
-        howOften: "",
-        period: ""
+        howOften: '',
+        period: '',
       },
       students: [],
-      noResultsFound: true
+      noResultsFound: true,
+      isLoadingResults: true,
+      amountOfLoaders: 4,
     };
   },
   mounted() {
     const { datePickerEl } = this.$refs;
     // datePickerEl.toggle();
     const postalCode = this.$route.query.postcode;
-    if (!postalCode || postalCode === "") {
-      this.$router.push("/");
+    if (!postalCode || postalCode === '') {
+      this.$router.push('/');
     } else {
       axios
         .get(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${postalCode}&key=AIzaSyCpwMe7tW66lpnDogJ3QkE_0T3muucADnY`
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${postalCode}&key=AIzaSyCpwMe7tW66lpnDogJ3QkE_0T3muucADnY`,
         )
-        .then(res => {
-          if (res.data.status === "OK") {
+        .then((res) => {
+          if (res.data.status === 'OK') {
             if (
-              res.data.results[0].address_components[2].short_name ===
-              "Amsterdam"
+              res.data.results[0].address_components[2].short_name
+              === 'Amsterdam'
             ) {
               this.coordinates.lat = res.data.results[0].geometry.location.lat;
               this.coordinates.lon = res.data.results[0].geometry.location.lng;
@@ -435,8 +555,8 @@ export default {
             this.$toast.open({
               duration: 5000,
               message:
-                "We kunnen jouw postcode helaas niet vinden. Probeer het opnieuw.",
-              type: "is-danger"
+                'We kunnen jouw postcode helaas niet vinden. Probeer het opnieuw.',
+              type: 'is-danger',
             });
           }
         });
@@ -444,7 +564,7 @@ export default {
   },
   methods: {
     submitCallMoreInfo() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (!result) {
           // If there are errors in input
           // Remove loading button
@@ -453,19 +573,19 @@ export default {
 
         const { db } = this.$store.state;
 
-        db.collection("callBack")
+        db.collection('callBack')
           .doc()
           .set({
             phoneNumber: this.phoneNumber,
-            creationTime: new Date()
+            creationTime: new Date(),
           })
           .then(() => {
             this.$toast.open({
-              message: "We bellen je binnen een dag terug!",
-              type: "is-success"
+              message: 'We bellen je binnen een dag terug!',
+              type: 'is-success',
             });
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
           });
       });
@@ -480,40 +600,41 @@ export default {
       // Getting students
       const { db } = this.$store.state;
       const dayOfWeek = new Date(this.searchInfo.datePicker).getDay();
-      db.collection("students")
+      db.collection('students')
         // .where('availableDayOfWeek', 'array-contains', dayOfWeek)
         .get()
-        .then(querySnapshot => {
+        .then((querySnapshot) => {
           this.students = [];
           if (querySnapshot.docs.length !== 0) {
             this.noResultsFound = false;
-            querySnapshot.forEach(doc => {
+            querySnapshot.forEach((doc) => {
               console.log(doc.data());
               const studentData = doc.data();
               studentData.id = doc.ref.id;
               this.students.push(studentData);
+              this.isLoadingResults = false;
             });
           } else {
             this.noResultsFound = true;
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
-    }
+    },
   },
   computed: {
     searchQuery() {
       return this.searchInfo;
-    }
+    },
   },
   watch: {
     searchQuery: {
       handler() {
         this.getStudents();
       },
-      deep: true
-    }
-  }
+      deep: true,
+    },
+  },
 };
 </script>
