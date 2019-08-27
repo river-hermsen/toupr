@@ -1,5 +1,6 @@
 <template>
   <div>
+    <b-loading :is-full-page="false" :active.sync="isLoadingData"></b-loading>
     <div>
       <h1 class="header-title">
         Afgelopen
@@ -7,7 +8,7 @@
       </h1>
     </div>
     <div class="session-history-container">
-      <b-table :data="sessions" :loading="isLoadingData">
+      <b-table :data="sessions">
         <template slot-scope="props">
           <b-table-column field="studentName" label="Naam student">
             <router-link
@@ -49,6 +50,7 @@
 
 .session-history-container {
   margin-top: 1.4em;
+  min-height: 400px;
 }
 </style>
 
@@ -109,13 +111,12 @@ export default {
                 studentID: studentID,
                 studentname: studentInfo.name
               });
-              this.isLoadingData = false;
             });
           });
         }
       })
       .then(() => {
-        this.isLoading = false;
+        this.isLoadingData = false;
       });
     // .catch(err => console.log(err));
   }

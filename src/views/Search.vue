@@ -327,7 +327,7 @@
     border: 1px solid #ebebeb;
     border-radius: 5px;
     position: relative;
-    margin-bottom: 1.2rem;
+    margin-top: 1.2rem;
     height: 190px;
     overflow: hidden;
     &:only-child {
@@ -522,7 +522,7 @@ export default {
         period: '',
       },
       students: [],
-      noResultsFound: true,
+      noResultsFound: false,
       isLoadingResults: true,
       amountOfLoaders: 4,
     };
