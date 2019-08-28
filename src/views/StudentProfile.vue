@@ -256,13 +256,23 @@
               </div>
             </div>
             <div class="column is-8">
-              <div>
-                <h2>Aanpak</h2>
+              <div class="student-bio">
+                <h2 class="title">Aanpak</h2>
+                <div>
+                  <p>{{student.bio.aanpak}}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="student-info-bottom"></div>
+        <div class="student-info-bottom">
+          <div class="student-reviews-container">
+            <div class="student-reviews-header">
+              <h1 class="is-size-2 title">Beoordelingen van {{student.name.fname}}</h1>
+              <span>Al onze beoordelingen zijn verzameld door ons en zijn 100% betrouwbaar. Ze komen overeen met echte ervaringen van leerlingen van de student.</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="column is-3">
@@ -331,6 +341,8 @@
   }
   .student-info-middle {
     margin-top: 2.5rem;
+    border-bottom: 1px solid #ebebeb;
+    padding-bottom: 1.5rem;
     .student-perks-container {
       .student-perks-header {
         width: fit-content;
@@ -356,6 +368,16 @@
         }
       }
     }
+    .student-bio {
+      h2 {
+        margin-bottom: 0.75rem;
+      }
+    }
+  }
+  .student-info-bottom {
+    .student-reviews-container {
+      padding-top: 1.5rem;
+    }
   }
 }
 </style>
@@ -369,8 +391,6 @@ export default {
     };
   },
   beforeCreate() {
-    console.log(this.$route.params.id);
-
     const { db } = this.$store.state;
     db.collection('students')
       .doc(this.$route.params.id)
@@ -379,7 +399,6 @@ export default {
         this.student = doc.data();
         this.isLoading = false;
         console.log(doc.data());
-        console.log(this.student.availability.thisWeek.monday.firstSesion);
       })
       .catch((err) => {
         console.log(err);
