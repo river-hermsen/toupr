@@ -85,13 +85,114 @@
                   <span>Toupr team</span>
                 </div>
                 <div class="student-recommendation">
-                  <p>Hidde is een erg ambitieuze student. Niet alleen via Toupr helpt hij andere. Ook is Hidde vrijwilliger en heeft hij zijn eigen business.</p>
+                  <p>"{{student.reviews.teamRecommendation}}"</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="student-info-middle"></div>
+        <div class="student-info-middle">
+          <div class="columns">
+            <div class="column is-4">
+              <div class="columns is-multiline">
+                <div class="column is-12">
+                  <div class="student-perks-container">
+                    <div class="student-perks-header">
+                      <h4>Geverifieerde student</h4>
+                    </div>
+                    <div>
+                      <div class="student-perk">
+                        <b-icon
+                          icon="check"
+                          v-if="student.verified.perks.vog"
+                          class="has-text-primary"
+                        ></b-icon>
+                        <b-icon icon="minus" class="has-text-danger" v-else></b-icon>
+                        <span class="student-perk-text">VOG</span>
+                      </div>
+                      <div class="student-perk">
+                        <b-icon
+                          icon="check"
+                          v-if="student.verified.perks.offlineId"
+                          class="has-text-primary"
+                        ></b-icon>
+                        <b-icon icon="minus" class="has-text-danger" v-else></b-icon>
+                        <span class="student-perk-text">Offline ID</span>
+                      </div>
+                      <div class="student-perk">
+                        <b-icon
+                          icon="check"
+                          v-if="student.verified.perks.bankingData"
+                          class="has-text-primary"
+                        ></b-icon>
+                        <b-icon icon="minus" class="has-text-danger" v-else></b-icon>
+                        <span class="student-perk-text">Bank Gegevens</span>
+                      </div>
+                      <div class="student-perk">
+                        <b-icon
+                          icon="check"
+                          v-if="student.verified.perks.bankingData"
+                          class="has-text-primary"
+                        ></b-icon>
+                        <b-icon icon="minus" class="has-text-danger" v-else></b-icon>
+                        <span class="student-perk-text">{{student.studentInfo.studyInfo.level}}</span>
+                      </div>
+                      <div class="student-perk">
+                        <b-icon
+                          icon="check"
+                          v-if="student.verified.perks.socialMedia"
+                          class="has-text-primary"
+                        ></b-icon>
+                        <b-icon icon="minus" class="has-text-danger" v-else></b-icon>
+                        <span class="student-perk-text">Sociale Media</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="column is-12">
+                  <div class="student-perks-container">
+                    <div class="student-perks-header">
+                      <h4>Reactietijd</h4>
+                    </div>
+                    <div>Binnen één dag</div>
+                  </div>
+                </div>
+                <div class="column is-12">
+                  <div class="student-perks-container">
+                    <div class="student-perks-header">
+                      <h4>Beschikbaarheid</h4>
+                    </div>
+                    <div class="student-perks-availability-container">
+                      <div>
+                        <div>
+                          <span class="student-perks-availability-days">Maandag</span>
+                          <span class="student-perks-availability-time">16:00 - 20:30</span>
+                        </div>
+                        <div>
+                          <span class="student-perks-availability-days">Dinsdag</span>
+                          <span class="student-perks-availability-time">16:00 - 20:30</span>
+                        </div>
+                        <div>
+                          <span class="student-perks-availability-days">Woensdag</span>
+                          <span class="student-perks-availability-time">16:00 - 20:30</span>
+                        </div>
+                        <div>
+                          <span class="student-perks-availability-days">Donderdag</span>
+                          <span class="student-perks-availability-time">16:00 - 20:30</span>
+                        </div>
+                        <div>
+                          <span class="student-perks-availability-days">Vrijdag</span>
+                          <span class="student-perks-availability-time">16:00 - 20:30</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="column is-8"></div>
+          </div>
+        </div>
         <div class="student-info-bottom"></div>
       </div>
     </div>
@@ -150,7 +251,41 @@
         display: flex;
         .student-recommendation-toupr-team {
           float: left;
-          width: 25%;
+          width: 35%;
+          font-weight: 800;
+        }
+        .student-recommendation {
+          font-style: italic;
+        }
+      }
+    }
+  }
+  .student-info-middle {
+    margin-top: 2.5rem;
+    .student-perks-container {
+      .student-perks-header {
+        width: fit-content;
+        min-width: 15rem;
+        padding-bottom: 0.2rem;
+        border-bottom: 1px solid #ebebeb;
+        margin-bottom: 0.4rem;
+        h4 {
+          font-weight: 500;
+        }
+      }
+      .student-perk {
+        display: flex;
+        align-items: center;
+        .student-perk-text {
+          margin-left: 0.4rem;
+        }
+      }
+      .student-perks-availability-container {
+        width: 15rem;
+        .student-perks-availability-days {
+        }
+        .student-perks-availability-time {
+          float: right;
         }
       }
     }
