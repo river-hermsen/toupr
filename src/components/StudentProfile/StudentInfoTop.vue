@@ -23,12 +23,11 @@
               <b-icon icon="star-outline" v-else></b-icon>
             </div>
             <div class="student-amount-reviews">
-              (
-              <span>{{/* eslint-disable */ student.reviews.reviews.length <5 ? '<5' : student.reviews.reviews.length}}</span> beoordelingen)
+              <span>({{/* eslint-disable */ student.reviews.reviews.length <5 ? '<5' : student.reviews.reviews.length}} beoordelingen)</span>
             </div>
           </div>
           <div class="student-member-since">
-            <span>Lid sinds {{new Date(student.dateSignUp.seconds*1000).getFullYear()}}-{{new Date(student.dateSignUp.seconds*1000).getMonth()}}</span>
+            <span>Lid sinds {{months[new Date(student.dateSignUp.seconds*1000).getMonth()]}} {{new Date(student.dateSignUp.seconds*1000).getFullYear()}}</span>
           </div>
         </div>
         <div class="column is-5">
@@ -77,6 +76,10 @@
       <div>
         <div class="student-recommendation-by-toupr">
           <div class="student-recommendation-toupr-team">
+            <img
+              src="https://firebasestorage.googleapis.com/v0/b/toupr-35ecc.appspot.com/o/meta%2Ftouprteam.png?alt=media&token=1eb7768c-537f-4689-868f-1eb6009aed4b"
+              alt="Toupr team logo"
+            />
             <span>Toupr team</span>
           </div>
           <div class="student-recommendation">
@@ -134,6 +137,11 @@
         float: left;
         width: 35%;
         font-weight: 800;
+        text-align: center;
+        padding-right: 1rem;
+        img {
+          width: 40px;
+        }
       }
       .student-recommendation {
         font-style: italic;
@@ -146,5 +154,22 @@
 <script>
 export default {
   props: ['student'],
+  data() {
+    return {
+      months: [
+        'Januari',
+        'Februari',
+        'Maart',
+        'April',
+        'Mei',
+        'Juni',
+        'Juli',
+        'Augustus',
+        'Oktober',
+        'November',
+        'December',
+      ],
+    };
+  },
 };
 </script>

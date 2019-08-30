@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="column is-3">
-      <div class="book-student"></div>
+      <StudentBook :student="student" />
     </div>
   </div>
 </template>
@@ -24,6 +24,7 @@
 import StudentProfileTop from '../components/StudentProfile/StudentInfoTop.vue';
 import StudentProfileMiddle from '../components/StudentProfile/StudentInfoMiddle.vue';
 import StudentProfileBottom from '../components/StudentProfile/StudentInfoBottom.vue';
+import StudentBook from '../components/StudentProfile/StudentBook.vue';
 
 export default {
   data() {
@@ -36,6 +37,7 @@ export default {
     StudentProfileTop,
     StudentProfileMiddle,
     StudentProfileBottom,
+    StudentBook,
   },
   beforeCreate() {
     /* eslint-disable */
