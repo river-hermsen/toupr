@@ -32,6 +32,7 @@
           :min-date="new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2)"
           :max-date="new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 30)"
           :unselectable-dates="[new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 5)]"
+          :unselectable-days-of-week="unselectableDaysOfWeekDatePicker"
           :mobile-native="false"
           v-model="datePicker"
           ref="datePickerEl"
@@ -128,6 +129,7 @@ export default {
     return {
       datePicker: null,
       unselectableDatesDatePicker: [],
+      unselectableDaysOfWeekDatePicker: [],
       unselectableDates: [],
       howOften: '',
       sessionTime: '',
@@ -140,6 +142,11 @@ export default {
       .get()
       .then((doc) => {
         console.log(doc.data());
+        const data = doc.data();
+        console.log(data.default);
+        Object.keys(data.default).forEach((key) => {
+          console.log(key, data.default[key]);
+        });
       })
       .catch((err) => {
         console.log(err);

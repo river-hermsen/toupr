@@ -17,9 +17,9 @@
         </div>
       </div>
 
-      <div class="mobile-nav">
+      <div class="mobile-nav" id="mobileNav">
         <div class="mobile-nav__content">
-          <ul class="mobile-nav__list">
+          <ul class="mobile-nav__list visibility-hidden" id="mobileNavList">
             <!-- <li class="nav__list-item">Home</li>
             <li class="nav__list-item">About</li>
             <li class="nav__list-item">Projects</li>
@@ -135,10 +135,6 @@ $break-mobile: 768px;
   $transition--easing: cubic-bezier(0.77, 0, 0.175, 1);
   position: fixed;
   z-index: 1;
-  @media screen and (max-width: $break-mobile) {
-    display: none;
-  }
-
   &:before,
   &:after {
     content: "";
@@ -262,12 +258,15 @@ export default {
     return {
       showingBurgerMenu: false,
       bodyEl: document.querySelector('body'),
+      mobileNavEl: document.getElementById('mobileNav'),
     };
   },
   methods: {
     openFullWidthNav() {
-      // const body = document.querySelector('body');
       this.bodyEl.classList.toggle('mobile-nav-active');
+      document
+        .getElementById('mobileNavList')
+        .classList.toggle('visibility-hidden');
     },
     openCloseMobileMenu() {
       const burger = this.$refs.burgerMenu;
@@ -287,6 +286,9 @@ export default {
   watch: {
     isChangedRoute() {
       this.bodyEl.classList.remove('mobile-nav-active');
+      document
+        .getElementById('mobileNavList')
+        .classList.add('visibility-hidden');
     },
   },
 };
@@ -294,8 +296,8 @@ export default {
 
 
 <style lang="scss" scoped>
-.display-none {
-  display: none;
+.visibility-hidden {
+  visibility: hidden;
 }
 
 nav {
@@ -349,6 +351,7 @@ nav {
     max-height: 49px;
   }
 }
+
 .navbar-logo-container {
   img {
     max-height: 2.75rem;
