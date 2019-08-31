@@ -37,7 +37,7 @@
             <b-tooltip
               label="Deze Toupr student is een Super Toupr omdat hij/zij erg ervaren is en consistent is in het krijgen van hoge ratings en reviews. Toupr studenten zijn onafhankelijk en deze rating helpt jou om een beter geïnformeerde keuze te kunnen maken tussen de studenten."
               type="is-light"
-              position="is-bottom"
+              position="is-left"
               multilined
             >
               <b-icon icon="information-outline" size="is-small"></b-icon>
@@ -53,7 +53,7 @@
             <b-tooltip
               label="Hoevaak een Toupr student een positieve review heeft ontvangen gebaseerd op alle reviews. Toupr studenten zijn onafhankelijk en deze rating helpt jou om een beter geïnformeerde keuze te kunnen maken tussen de studenten."
               type="is-light"
-              position="is-bottom"
+              position="is-left"
               multilined
             >
               <b-icon icon="information-outline" size="is-small"></b-icon>
@@ -65,7 +65,7 @@
             <b-tooltip
               label="Hoevaak de Toupr student zijn afspraken na komt en op tijd is.  Toupr studenten zijn onafhankelijk en deze rating helpt jou om een beter geïnformeerde keuze te kunnen maken tussen de studenten."
               type="is-light"
-              position="is-bottom"
+              position="is-left"
               multilined
             >
               <b-icon icon="information-outline" size="is-small"></b-icon>

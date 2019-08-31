@@ -28,6 +28,7 @@
     </b-modal>
     <div class="columns">
       <div class="side-content column is-3">
+        <div class="postal-code-container"></div>
         <div class="weekly-card">
           <div class="weekly-card-header">
             <span>Wekelijks</span>
@@ -76,37 +77,8 @@
           <div class="recommended">
             <h2>Aanbevolen voor jou</h2>
           </div>
-          <div class="input-header-container">
-            <b-datepicker
-              :focused-date="new Date()"
-              :first-day-of-week="1"
-              :min-date="new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2)"
-              :max-date="new Date(new Date().getFullYear(), new Date().getMonth()+1, new Date().getDate())"
-              v-model="searchInfo.datePicker"
-              ref="datePickerEl"
-              class="date-picker-input"
-              placeholder="Datum"
-              icon="calendar-today"
-            ></b-datepicker>
-            <div class="select how-often-input">
-              <select v-model="searchInfo.howOften">
-                <option disabled value>Hoe vaak?</option>
-                <option>Eenmalig</option>
-                <option>Wekelijks</option>
-              </select>
-            </div>
-            <div class="select">
-              <select v-model="searchInfo.period">
-                <option disabled value>Hoelaat?</option>
-                <option>Maakt niet uit</option>
-                <option>16:00 - 18:00</option>
-                <option>18:30 - 20:30</option>
-              </select>
-            </div>
-          </div>
         </div>
         <div class="students-content" ref="studentsContent">
-          <!-- <b-loading :is-full-page="loader.isFullPage" :active.sync="loader.isLoading"></b-loading> -->
           <h3
             v-if="noResultsFound"
             class="is-size-5 no-results-found"
@@ -124,12 +96,21 @@
           <div class="student-container" v-for="student in students" :key="student.id">
             <div class="columns student-columns">
               <div
-                class="column is-3 student-image"
+                class="column is-3 is-12-mobile student-image"
                 :style="{backgroundImage: 'url(' + student.photoURL + ')'}"
               ></div>
               <div class="column is-7 student-info">
                 <div class="columns student-name-price">
                   <h4 class="column is-8 is-size-4 student-name">{{student.name.fname}}</h4>
+                  <b-tooltip
+                    label="Geverifieerde Toupr Student"
+                    type="is-light"
+                    position="is-right"
+                    class="is-hidden-tablet"
+                  >
+                    <b-icon icon="shield-check"></b-icon>
+                  </b-tooltip>
+
                   <h5 class="column is-4 student-price">
                     <span class="is-size-6">€ {{student.price}}</span>
                     <span class="is-size-7">&ensp;per uur</span>
@@ -167,15 +148,26 @@
                     </p>
                   </div>
                 </div>
-                <div class="columns">
+                <div class="columns is-hidden-mobile">
                   <div class="column is-12 student-icons">
-                    <b-tooltip
-                      label="Geverifieerde Toupr Student"
-                      type="is-light"
-                      position="is-bottom"
-                    >
-                      <b-icon icon="shield-check"></b-icon>
-                    </b-tooltip>
+                    <div class="student-icon">
+                      <b-tooltip
+                        label="Geverifieerde Toupr Student"
+                        type="is-light"
+                        position="is-right"
+                      >
+                        <b-icon icon="shield-check"></b-icon>
+                      </b-tooltip>
+                    </div>
+                    <div class="student-icon">
+                      <b-tooltip
+                        label="100% positieve beoordelingen"
+                        type="is-light"
+                        position="is-right"
+                      >
+                        <b-icon icon="check-circle-outline"></b-icon>
+                      </b-tooltip>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -198,6 +190,7 @@
 </template>
 
 <style lang="scss" scoped>
+$break-mobile: 768px;
 .search-content {
   max-width: 1250px;
   margin: 2rem auto;
@@ -281,12 +274,19 @@
   margin: 0 2rem;
   padding: 0.75rem;
   width: 100%;
+  @media screen and (max-width: $break-mobile) {
+    margin: 0rem;
+    padding: 0rem;
+  }
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media screen and (max-width: $break-mobile) {
+    margin-left: 2.5rem;
+  }
   .recommended {
     h2 {
       display: inline;
@@ -394,12 +394,17 @@
   .student-container {
     border-radius: 5px;
     background-color: white;
-    height: 190px;
     max-width: 100%;
     margin-top: 1.2rem;
     box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.06);
     border-top: 1px solid #ebebeb;
     border-bottom: 1px solid #ebebeb;
+    @media screen and (max-width: $break-mobile) {
+      max-width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      border: 1px solid #ebebeb;
+    }
     .student-columns {
       margin: 0px;
     }
@@ -414,12 +419,21 @@
       background-size: 300px auto;
       background-position: center;
       background-size: cover;
+      @media screen and (max-width: $break-mobile) {
+        margin: 0 auto;
+        border-radius: 5px;
+        width: auto;
+        height: 300px;
+      }
     }
     .student-info {
       .student-name {
         padding-bottom: 0.1rem;
         margin-left: 0.3rem;
         font-weight: 600;
+        @media screen and (max-width: $break-mobile) {
+          display: inline-block;
+        }
       }
       .student-price {
         display: flex;
@@ -450,6 +464,10 @@
       }
       .student-icons {
         padding-left: 1rem;
+        .student-icon {
+          display: inline-block;
+          margin-right: 0.6rem;
+        }
       }
     }
     .student-select {
@@ -463,6 +481,12 @@
       border-top-right-radius: 5px;
       border-bottom-right-radius: 5px;
       cursor: pointer;
+      @media screen and (max-width: $break-mobile) {
+        width: initial;
+        border-top: 2px solid #ebebeb;
+        border-right: 0px;
+        border-bottom: 0px;
+      }
       h3 {
         text-align: center;
       }

@@ -14,22 +14,21 @@
         </h3>
       </div>
       <div class="columns">
-        <div
-          class="column is-hidden-mobile is-11-touch is-9-tablet is-6-desktop is-5-fullhd input-header"
-        >
+        <div class="column is-11-touch is-9-tablet is-6-desktop is-5-fullhd input-header">
           <h3 class="title">Kijk of we al bij jou in de buurt zijn.</h3>
           <div class="outer columns">
             <b-field
               class="field column is-9"
               :class="{ 'is-danger': errors.has('postcode') }"
+              :message="errors.first('postcode')"
               :type="{'is-danger': errors.has('postcode')}"
             >
               <b-input
                 name="postcode"
                 placeholder="Postcode"
-                v-model="postcode"
+                v-model.trim="postcode"
                 @keyup.native.enter="handleSearch"
-                v-validate="'required|max:7|min:6'"
+                v-validate="{ required: true, max: 6, min:6, regex: /[^\s]+/ }"
               ></b-input>
             </b-field>
             <b-button type="input-button is-primary column is-3" @click="handleSearch">Zoeken</b-button>

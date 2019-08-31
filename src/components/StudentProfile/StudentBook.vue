@@ -30,7 +30,9 @@
           :focused-date="new Date()"
           :first-day-of-week="1"
           :min-date="new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2)"
-          :max-date="new Date(new Date().getFullYear(), new Date().getMonth()+1, new Date().getDate())"
+          :max-date="new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 30)"
+          :unselectable-dates="[new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 5)]"
+          :mobile-native="false"
           v-model="datePicker"
           ref="datePickerEl"
           class="date-picker-input"
@@ -113,15 +115,44 @@
 }
 </style>
 
+<style lang="scss">
+.dropdown.is-mobile-modal .dropdown-menu {
+  position: absolute;
+}
+</style>
+
 <script>
 export default {
   props: ['student'],
   data() {
     return {
       datePicker: null,
+      unselectableDatesDatePicker: [],
+      unselectableDates: [],
       howOften: '',
       sessionTime: '',
     };
+  },
+  mounted() {
+    const { db } = this.$store.state;
+    db.collection('availabilityStudents')
+      .doc(this.$route.params.id)
+      .get()
+      .then((doc) => {
+        console.log(doc.data());
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
+  methods: {
+    // getWeekNumber(d) {
+    //   d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    //   d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    //   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    //   const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+    //   return [d.getUTCFullYear(), weekNo];
+    // },
   },
 };
 </script>
