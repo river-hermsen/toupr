@@ -31,7 +31,7 @@
           :first-day-of-week="1"
           :min-date="new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2)"
           :max-date="new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 30)"
-          :unselectable-dates="[new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 5)]"
+          :unselectable-dates="unselectableDatesDatePicker"
           :unselectable-days-of-week="unselectableDaysOfWeekDatePicker"
           :mobile-native="false"
           v-model="datePicker"
@@ -40,21 +40,21 @@
           placeholder="Datum"
           icon="calendar-today"
         ></b-datepicker>
-        <div class="student-book-howOften select">
+        <div class="student-book-sessionTime select">
+          <select v-model="sessionTime">
+            <option disabled value>Hoelaat?</option>
+            <!-- <option>Maakt niet uit</option> -->
+            <option ref="firstSessionSelect">16:00 - 18:00</option>
+            <option ref="secondSessionSelect">18:30 - 20:30</option>
+          </select>
+        </div>
+        <!-- <div class="student-book-howOften select">
           <select v-model="howOften">
             <option disabled value>Hoe vaak?</option>
             <option>Eenmalig</option>
             <option>Wekelijks</option>
           </select>
-        </div>
-        <div class="student-book-sessionTime select">
-          <select v-model="sessionTime">
-            <option disabled value>Hoelaat?</option>
-            <option>Maakt niet uit</option>
-            <option>16:00 - 18:00</option>
-            <option>18:30 - 20:30</option>
-          </select>
-        </div>
+        </div>-->
         <b-button type="is-primary" class="student-book-continue-btn">Veder</b-button>
         <span class="student-book-no-bill-text">Er wordt nog niets in rekening gebracht.</span>
       </div>
@@ -120,6 +120,10 @@
 .dropdown.is-mobile-modal .dropdown-menu {
   position: absolute;
 }
+
+.select select option:disabled {
+  color: #d3d3d3;
+}
 </style>
 
 <script>
@@ -129,8 +133,10 @@ export default {
     return {
       datePicker: null,
       unselectableDatesDatePicker: [],
-      unselectableDaysOfWeekDatePicker: [],
+      unselectableDaysOfWeekDatePicker: [0, 6],
       unselectableDates: [],
+      allSpecialDefaultDays: [],
+      allSpecialCustomDays: [],
       howOften: '',
       sessionTime: '',
     };
@@ -141,11 +147,23 @@ export default {
       .doc(this.$route.params.id)
       .get()
       .then((doc) => {
-        console.log(doc.data());
         const data = doc.data();
-        console.log(data.default);
         Object.keys(data.default).forEach((key) => {
-          console.log(key, data.default[key]);
+          const day = data.default[key];
+          if (!day.firstSession && !day.secondSession) {
+            this.unselectableDaysOfWeekDatePicker.push(day.dayOfWeek);
+          }
+          this.allSpecialDefaultDays.push(day);
+        });
+        return data;
+      })
+      .then((data) => {
+        data.customNotAvailable.forEach((dateSession) => {
+          if (!dateSession.firstSession && !dateSession.secondSession) {
+            const dateUnselectable = new Date(dateSession.date.seconds * 1000);
+            this.unselectableDatesDatePicker.push(dateUnselectable);
+          }
+          this.allSpecialCustomDays.push(dateSession);
         });
       })
       .catch((err) => {
@@ -153,13 +171,34 @@ export default {
       });
   },
   methods: {
-    // getWeekNumber(d) {
-    //   d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    //   d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-    //   const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    //   const weekNo = Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-    //   return [d.getUTCFullYear(), weekNo];
-    // },
+    checkTimeOnDate() {
+      const date = this.datePicker;
+      // Check on default days
+      const availableTimeDefault = this.allSpecialDefaultDays.find(
+        day => day.dayOfWeek === date.getDay(),
+      );
+      this.$refs.firstSessionSelect.disabled = false;
+      this.$refs.secondSessionSelect.disabled = false;
+      if (!availableTimeDefault.firstSession) {
+        this.$refs.firstSessionSelect.disabled = true;
+      } else if (!availableTimeDefault.secondSession) {
+        this.$refs.secondSessionSelect.disabled = true;
+      }
+      // Check on custom days
+      const availableTimeCustom = this.allSpecialCustomDays.find((day) => {
+        console.log(new Date(day.date.seconds * 1000));
+        console.log(new Date(date));
+        if (new Date(day.date.seconds * 1000) === new Date(date)) {
+          console.log('true');
+        }
+      });
+      // console.log(availableTimeCustom);
+    },
+  },
+  watch: {
+    datePicker() {
+      this.checkTimeOnDate();
+    },
   },
 };
 </script>

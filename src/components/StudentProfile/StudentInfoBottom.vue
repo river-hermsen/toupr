@@ -38,7 +38,7 @@
               <b-tooltip
                 label="Deze beoordeling is een aanbeveling en dus geen review van een gebruiker van Toupr."
                 type="is-light"
-                position="is-bottom"
+                position="is-left"
                 multilined
               >
                 <b-icon icon="thumb-up-outline"></b-icon>

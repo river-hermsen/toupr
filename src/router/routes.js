@@ -1,10 +1,7 @@
 // Import Vue views
 import Home from '../views/Home.vue';
 import Login from '../views/auth/Login.vue';
-import SignUp from '../views/auth/SignUp.vue';
-import ForStudents from '../views/ForStudents.vue';
 import Search from '../views/Search.vue';
-import OutsidePostalCode from '../views/OutsidePostalCode.vue';
 import NotFound from '../views/404.vue';
 // import Dashboard from '../views/Dashboard.vue';
 
@@ -24,9 +21,17 @@ export default [
     },
   },
   {
-    path: '/signup',
+    path: '/wachtwoordvergeten',
+    name: 'ForgotPassword',
+    component: () => import(/* webpackChunkName: "ForgotPassword" */ '../views/auth/ForgotPassword.vue'),
+    meta: {
+      requiredAuth: false,
+    },
+  },
+  {
+    path: '/aanmelden',
     name: 'SignUp',
-    component: SignUp,
+    component: () => import(/* webpackChunkName: "SignUp" */ '../views/auth/SignUp.vue'),
     meta: {
       requiredAuth: false,
     },
@@ -34,7 +39,7 @@ export default [
   {
     path: '/studenten',
     name: 'ForStudents',
-    component: ForStudents,
+    component: () => import(/* webpackChunkName: "ForStudents" */ '../views/ForStudents.vue'),
   },
   {
     path: '/zoeken',
@@ -49,7 +54,7 @@ export default [
   {
     path: '/buitenpostcode',
     name: 'BuitenPostcode',
-    component: OutsidePostalCode,
+    component: () => import(/* webpackChunkName: "BuitenPostcode" */ '../views/OutsidePostalCode.vue'),
   },
   {
     path: '/olddashboard',

@@ -31,7 +31,7 @@
               tag="li"
             >Log in</router-link>
             <router-link
-              to="/signup"
+              to="/aanmelden"
               class="router-link-nav-bar link-nav-bar mobile-nav__list-item"
               v-if="isLoggedIn === false"
               tag="li"
@@ -67,7 +67,7 @@
               tag="span"
             >Log in</router-link>
             <router-link
-              to="/signup"
+              to="/aanmelden"
               class="router-link-nav-bar link-nav-bar"
               v-if="isLoggedIn === false"
               tag="span"
@@ -162,6 +162,9 @@ $break-mobile: 768px;
     font-size: $font--size--calc;
     font-weight: 200;
     cursor: pointer;
+    @media screen and (min-width: $break-mobile) {
+      display: none;
+    }
   }
   &__list-item {
     position: relative;
