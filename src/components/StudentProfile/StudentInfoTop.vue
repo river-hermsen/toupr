@@ -1,6 +1,6 @@
 <template>
-  <div class="student-info-top columns">
-    <div class="student-image column is-4">
+  <div class="student-info-top columns is-multiline">
+    <div class="student-image column is-4 is-12-mobile">
       <img :src="student.photoURL" alt />
     </div>
     <div class="student-info-detailed column is-8">
@@ -99,7 +99,6 @@
   .student-image {
     img {
       border-radius: 5px;
-      width: 310px;
       object-fit: contain;
     }
   }
@@ -153,23 +152,23 @@
 
 <script>
 export default {
-  props: ['student'],
+  props: ["student"],
   data() {
     return {
       months: [
-        'Januari',
-        'Februari',
-        'Maart',
-        'April',
-        'Mei',
-        'Juni',
-        'Juli',
-        'Augustus',
-        'Oktober',
-        'November',
-        'December',
-      ],
+        "Januari",
+        "Februari",
+        "Maart",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Augustus",
+        "Oktober",
+        "November",
+        "December"
+      ]
     };
-  },
+  }
 };
 </script>

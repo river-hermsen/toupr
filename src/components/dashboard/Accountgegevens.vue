@@ -128,7 +128,7 @@ export default {
     };
   },
   beforeMount() {
-    // Quick fix to make vue data non reactive and only store data in Vuex when neeeded.
+    // Quick fix to make vue data non reactive and only store data in Vuex when needed.
     this.userInfo = JSON.parse(JSON.stringify(store.getters.getUserInfo));
     console.log(this.userInfo);
     if (!this.userInfo.adresInfo) {

@@ -95,6 +95,8 @@ export default {
   methods: {
     handleLogOut() {
       this.$destroy();
+      this.$store.state.userData = null;
+      this.$store.state.userInfo = null;
       firebase
         .auth()
         .signOut()

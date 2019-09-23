@@ -43,19 +43,15 @@
         <div class="student-book-sessionTime select">
           <select v-model="sessionTime">
             <option disabled value>Hoelaat?</option>
-            <!-- <option>Maakt niet uit</option> -->
             <option ref="firstSessionSelect">16:00 - 18:00</option>
             <option ref="secondSessionSelect">18:30 - 20:30</option>
           </select>
         </div>
-        <!-- <div class="student-book-howOften select">
-          <select v-model="howOften">
-            <option disabled value>Hoe vaak?</option>
-            <option>Eenmalig</option>
-            <option>Wekelijks</option>
-          </select>
-        </div>-->
-        <b-button type="is-primary" class="student-book-continue-btn">Veder</b-button>
+        <b-button
+          type="is-primary"
+          class="student-book-continue-btn"
+          @click="handleStudentBook()"
+        >Veder</b-button>
         <span class="student-book-no-bill-text">Er wordt nog niets in rekening gebracht.</span>
       </div>
     </div>
@@ -193,6 +189,26 @@ export default {
         }
       });
       // console.log(availableTimeCustom);
+    },
+    handleStudentBook() {
+      const store = this.$store;
+      console.log(store.state);
+      if (store.state.isLoggedIn) {
+        if (store.state.userInfo.completedProfile.is) {
+          this.$router.push('/bookstudent');
+        } else {
+          this.$router.push('/completeprofile');
+        }
+      } else {
+        this.$router.push('/login');
+        this.$toast.open({
+          duration: 9000,
+          message:
+            'Je moet eerst een account en een volledig profiel hebben om studenten te boeken.',
+          position: 'is-top',
+          type: 'is-warning',
+        });
+      }
     },
   },
   watch: {

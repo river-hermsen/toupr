@@ -18,8 +18,9 @@ router.beforeEach((to, from, next) => {
       // User is signed in.
       store.commit('changeLoginState', true);
       store.commit('addUserData', user);
+      console.log(store.state);
 
-      if (store.state.userInfo) {
+      if (store.state.userInfo !== null) {
         // If userInfo does exsits in VUEX
         const { userInfo } = store.state;
 
