@@ -73,6 +73,14 @@ export default [
     },
   },
   {
+    path: '/completeprofile',
+    name: 'CompleteProfile',
+    component: () => import(/* webpackChunkName: "CompleteProfile" */ '../views/CompleteProfile.vue'),
+    meta: {
+      requiredAuth: true,
+    },
+  },
+  {
     path: '/test',
     name: 'Test',
     component: () => import(/* webpackChunkName: "Test" */ '../views/Test.vue'),

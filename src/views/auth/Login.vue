@@ -3,6 +3,11 @@
     <h3 class="title">Inloggen</h3>
     <b-message type="is-danger" v-if="errorLogin.is">{{errorLogin.msg}}</b-message>
     <div>
+      <b-button @click="handleGoogleLogin()" class="google-login-btn">
+        <img src="../../assets/logo-icons/google-logo.png" class="google-login-img" />Login met Google
+      </b-button>
+    </div>
+    <div>
       <b-field
         label="Email"
         :class="{ 'is-danger': errors.has('Email') }"
@@ -71,6 +76,18 @@
 .login-button-container {
   float: right;
   width: 6rem;
+}
+.google-login-btn {
+  margin-bottom: 1.2rem;
+  :first-child {
+    display: flex;
+    align-items: center;
+  }
+  .google-login-img {
+    width: 1.6rem;
+    margin-left: -0.2rem;
+    margin-right: 0.2rem;
+  }
 }
 </style>
 
@@ -144,6 +161,33 @@ export default {
         })
         .catch(() => {
           // Failed
+        });
+    },
+    handleGoogleLogin() {
+      firebase
+        .auth()
+        .signInWithPopup(new firebase.auth.GoogleAuthProvider())
+        .then((result) => {
+          // This gives you a Google Access Token. You can use it to access the Google API.
+          const token = result.credential.accessToken;
+          // The signed-in user info.
+          const { user } = result;
+          console.log('sucess');
+          this.$router.push('/');
+          console.log(user);
+        })
+        .catch((error) => {
+          // Handle Errors here.
+          console.log('fail');
+          console.log(error);
+
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          // The email of the user's account used.
+          const { email } = error;
+          // The firebase.auth.AuthCredential type that was used.
+          const { credential } = error;
+          // ...
         });
     },
   },
