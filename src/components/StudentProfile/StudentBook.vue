@@ -41,7 +41,7 @@
           icon="calendar-today"
         ></b-datepicker>
         <div class="student-book-sessionTime select">
-          <select v-model="sessionTime">
+          <select v-model="sessionTime" :disabled="!datePicker">
             <option disabled value>Hoelaat?</option>
             <option ref="firstSessionSelect">16:00 - 18:00</option>
             <option ref="secondSessionSelect">18:30 - 20:30</option>
@@ -51,6 +51,7 @@
           type="is-primary"
           class="student-book-continue-btn"
           @click="handleStudentBook()"
+          :disabled="isNotDisabled"
         >Veder</b-button>
         <span class="student-book-no-bill-text">Er wordt nog niets in rekening gebracht.</span>
       </div>
@@ -89,6 +90,11 @@
     margin-top: 0.8rem;
     .student-book-dateTime-text {
       font-size: 0.85rem;
+    }
+    .date-picker-input {
+      :nth-child(5) {
+        cursor: pointer;
+      }
     }
     div {
       margin-bottom: 0.8rem;
@@ -130,36 +136,61 @@ export default {
       datePicker: null,
       unselectableDatesDatePicker: [],
       unselectableDaysOfWeekDatePicker: [0, 6],
-      unselectableDates: [],
-      allSpecialDefaultDays: [],
-      allSpecialCustomDays: [],
-      howOften: '',
+      allNotAvailableDefaultDays: [],
+      allNotAvailableCustomDays: [],
       sessionTime: '',
+      localeNames: {
+        week: [
+          'Maandag',
+          'Dinsdag',
+          'Woensdag',
+          'Donderdag',
+          'Vrijdag',
+          'Zaterdag',
+          'Zondag',
+        ],
+        months: [
+          'Januari',
+          'Februari',
+          'Maart',
+          'April',
+          'Mei',
+          'Juni',
+          'Juli',
+          'Augustus',
+          'Oktober',
+          'November',
+          'December',
+        ],
+      },
     };
   },
   mounted() {
     const { db } = this.$store.state;
+    // Get availability of students
     db.collection('availabilityStudents')
       .doc(this.$route.params.id)
       .get()
       .then((doc) => {
+        // Make days unselectable if both sessions are false for default days.
         const data = doc.data();
         Object.keys(data.default).forEach((key) => {
           const day = data.default[key];
           if (!day.firstSession && !day.secondSession) {
             this.unselectableDaysOfWeekDatePicker.push(day.dayOfWeek);
           }
-          this.allSpecialDefaultDays.push(day);
+          this.allNotAvailableDefaultDays.push(day);
         });
         return data;
       })
       .then((data) => {
+        // Make days unselectable if both sessions are false for custom days.
         data.customNotAvailable.forEach((dateSession) => {
           if (!dateSession.firstSession && !dateSession.secondSession) {
             const dateUnselectable = new Date(dateSession.date.seconds * 1000);
             this.unselectableDatesDatePicker.push(dateUnselectable);
           }
-          this.allSpecialCustomDays.push(dateSession);
+          this.allNotAvailableCustomDays.push(dateSession);
         });
       })
       .catch((err) => {
@@ -169,34 +200,63 @@ export default {
   methods: {
     checkTimeOnDate() {
       const date = this.datePicker;
-      // Check on default days
-      const availableTimeDefault = this.allSpecialDefaultDays.find(
-        day => day.dayOfWeek === date.getDay(),
-      );
-      this.$refs.firstSessionSelect.disabled = false;
-      this.$refs.secondSessionSelect.disabled = false;
-      if (!availableTimeDefault.firstSession) {
-        this.$refs.firstSessionSelect.disabled = true;
-      } else if (!availableTimeDefault.secondSession) {
-        this.$refs.secondSessionSelect.disabled = true;
-      }
       // Check on custom days
-      const availableTimeCustom = this.allSpecialCustomDays.find((day) => {
-        console.log(new Date(day.date.seconds * 1000));
-        console.log(new Date(date));
-        if (new Date(day.date.seconds * 1000) === new Date(date)) {
-          console.log('true');
+      const isOnCustomDate = this.allNotAvailableCustomDays.find(
+        (day, index) => {
+          // Convert from date object to unix date to compare to timestamp
+          const unixTimeDatePicker = Math.round(
+            new Date(date).getTime() / 1000,
+          );
+          if (day.date.seconds === unixTimeDatePicker) {
+            return index;
+          }
+          return undefined;
+        },
+      );
+      if (isOnCustomDate) {
+        // If there is an custom not available on selected date
+        this.$refs.firstSessionSelect.disabled = false;
+        this.$refs.secondSessionSelect.disabled = false;
+        if (!isOnCustomDate.firstSession) {
+          this.$refs.firstSessionSelect.disabled = true;
+        } else if (!isOnCustomDate.secondSession) {
+          this.$refs.secondSessionSelect.disabled = true;
         }
-      });
-      // console.log(availableTimeCustom);
+      } else {
+        // If there is NOT an custom not available on selected date
+
+        // Check on default days
+        const availableTimeDefault = this.allNotAvailableDefaultDays.find(
+          day => day.dayOfWeek === date.getDay(),
+        );
+        this.$refs.firstSessionSelect.disabled = false;
+        this.$refs.secondSessionSelect.disabled = false;
+        if (!availableTimeDefault.firstSession) {
+          this.$refs.firstSessionSelect.disabled = true;
+        } else if (!availableTimeDefault.secondSession) {
+          this.$refs.secondSessionSelect.disabled = true;
+        }
+      }
     },
     handleStudentBook() {
       const store = this.$store;
       console.log(store.state);
       if (store.state.isLoggedIn) {
         if (store.state.userInfo.completedProfile.is) {
-          this.$router.push('/bookstudent');
+          // If authenticated and if profile is completed
+          // Check if both values are not empty
+          if (this.datePicker !== '' && this.sessionTime !== '') {
+            // this.$router.push(`/book/${this.$route.params.id}`);
+            this.$dialog.confirm({
+              title: `Boeking bevestigen met ${this.student.name.fname} ${this.student.name.lname}`,
+              message: `Op <b>${this.formatDate(this.datePicker)}</b> om <b>${
+                this.sessionTime
+              }</b>`,
+              onConfirm: () => {},
+            });
+          }
         } else {
+          // If authenticated but profile is not yet completed
           this.$router.push('/completeprofile');
         }
       } else {
@@ -210,10 +270,31 @@ export default {
         });
       }
     },
+    formatDate(date) {
+      // For example format to: Maandag 17 Oktober 2019
+      const dateObj = new Date(date);
+
+      const dayOfWeek = this.localeNames.week[dateObj.getDay()];
+      const dateOfMonth = dateObj.getDate();
+      const month = this.localeNames.months[dateObj.getMonth()];
+      const year = dateObj.getFullYear();
+
+      return `${dayOfWeek} ${dateOfMonth} ${month} ${year}`;
+    },
+  },
+  computed: {
+    isNotDisabled() {
+      // Check if something has been entered in the required inputs to let user continue booking
+      if (this.datePicker !== null && this.sessionTime !== '') {
+        return false;
+      }
+      return true;
+    },
   },
   watch: {
     datePicker() {
       this.checkTimeOnDate();
+      this.sessionTime = '';
     },
   },
 };

@@ -52,6 +52,11 @@ export default [
     component: () => import(/* webpackChunkName: "StudentProfile" */ '../views/StudentProfile.vue'),
   },
   {
+    path: '/book/:id',
+    name: 'BookStudent',
+    component: () => import(/* webpackChunkName: "StudentProfile" */ '../views/BookStudent.vue'),
+  },
+  {
     path: '/buitenpostcode',
     name: 'BuitenPostcode',
     component: () => import(/* webpackChunkName: "BuitenPostcode" */ '../views/OutsidePostalCode.vue'),
